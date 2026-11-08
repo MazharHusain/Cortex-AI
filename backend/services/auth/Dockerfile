@@ -12,7 +12,6 @@ RUN cd services/auth && npm install
 
 # Copy source files
 COPY backend/services/auth ./services/auth
-COPY backend/shared ./shared
 
 WORKDIR /app/services/auth
 

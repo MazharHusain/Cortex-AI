@@ -12,7 +12,6 @@ RUN cd services/agent && npm install
 
 # Copy source files
 COPY backend/services/agent ./services/agent
-COPY backend/shared ./shared
 
 WORKDIR /app/services/agent
 

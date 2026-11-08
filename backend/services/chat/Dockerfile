@@ -12,7 +12,6 @@ RUN cd services/chat && npm install
 
 # Copy source files
 COPY backend/services/chat ./services/chat
-COPY backend/shared ./shared
 
 WORKDIR /app/services/chat
 

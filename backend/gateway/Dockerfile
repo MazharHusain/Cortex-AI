@@ -10,9 +10,8 @@ RUN npm install --ignore-scripts || true
 COPY backend/gateway/package*.json ./gateway/
 RUN cd gateway && npm install
 
-# Copy source files
+# Copy source files (no shared folder needed anymore)
 COPY backend/gateway ./gateway
-COPY backend/shared ./shared
 
 WORKDIR /app/gateway
 
