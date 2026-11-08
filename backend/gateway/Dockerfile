@@ -18,3 +18,5 @@ WORKDIR /app/gateway
 EXPOSE 8000
 
 CMD ["npm", "start"]
+
+# Deploy trigger: 2026-11-08 20:10:18
