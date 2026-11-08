@@ -1,16 +1,18 @@
-FROM node
+FROM node:20-alpine
 
 WORKDIR /app
 
+# Copy backend root package.json
+COPY backend/package*.json ./
+RUN npm install --ignore-scripts || true
 
-COPY package*.json ./
-RUN npm install
-
-COPY ./services/chat/package*.json ./services/chat/
+# Copy chat package.json and install
+COPY backend/services/chat/package*.json ./services/chat/
 RUN cd services/chat && npm install
 
-COPY services/chat ./services/chat
-COPY shared ./shared
+# Copy source
+COPY backend/services/chat ./services/chat
+COPY backend/shared ./shared
 
 WORKDIR /app/services/chat
 

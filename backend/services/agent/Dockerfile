@@ -1,16 +1,18 @@
-FROM node
+FROM node:20-alpine
 
 WORKDIR /app
 
+# Copy backend root package.json
+COPY backend/package*.json ./
+RUN npm install --ignore-scripts || true
 
-COPY package*.json ./
-RUN npm install
-
-COPY ./services/agent/package*.json ./services/agent/
+# Copy agent package.json and install
+COPY backend/services/agent/package*.json ./services/agent/
 RUN cd services/agent && npm install
 
-COPY services/agent ./services/agent
-COPY shared ./shared
+# Copy source
+COPY backend/services/agent ./services/agent
+COPY backend/shared ./shared
 
 WORKDIR /app/services/agent
 
