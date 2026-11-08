@@ -2,7 +2,7 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy backend root package.json (if exists)
+# Copy backend root package.json and install shared deps
 COPY backend/package*.json ./
 RUN npm install --ignore-scripts || true
 
@@ -10,7 +10,7 @@ RUN npm install --ignore-scripts || true
 COPY backend/gateway/package*.json ./gateway/
 RUN cd gateway && npm install
 
-# Copy source
+# Copy source files
 COPY backend/gateway ./gateway
 COPY backend/shared ./shared
 
@@ -18,9 +18,4 @@ WORKDIR /app/gateway
 
 EXPOSE 8000
 
-CMD [ "npm","start" ]
-
-
-
-
-
+CMD ["npm", "start"]

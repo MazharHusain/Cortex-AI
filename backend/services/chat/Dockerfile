@@ -2,7 +2,7 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy backend root package.json
+# Copy backend root package.json and install shared deps
 COPY backend/package*.json ./
 RUN npm install --ignore-scripts || true
 
@@ -10,7 +10,7 @@ RUN npm install --ignore-scripts || true
 COPY backend/services/chat/package*.json ./services/chat/
 RUN cd services/chat && npm install
 
-# Copy source
+# Copy source files
 COPY backend/services/chat ./services/chat
 COPY backend/shared ./shared
 
@@ -18,4 +18,4 @@ WORKDIR /app/services/chat
 
 EXPOSE 8002
 
-CMD [ "npm","start" ]
+CMD ["npm", "start"]
