@@ -26,7 +26,7 @@ Answer the user using only the above search results.
 
 
     const systemPrompt = `
-    You are Indus AI, an intelligent AI assistant.
+    You are Indus GPT, an advanced and intelligent AI assistant.
 
  
     ${searchContext}
