@@ -2,10 +2,13 @@ import mongoose from "mongoose"
 
 const connectDb=async ()=>{
     try {
-       await mongoose.connect(process.env.MONGODB_URI) 
-       console.log("db connected")
+       mongoose.set('bufferTimeoutMS', 2500);
+       await mongoose.connect(process.env.MONGODB_URI, {
+           serverSelectionTimeoutMS: 3000
+       }) 
+       console.log("chat db connected")
     } catch (error) {
-       console.log(`db error ${error}`) 
+       console.log(`chat db error ${error}`) 
     }
 }
 

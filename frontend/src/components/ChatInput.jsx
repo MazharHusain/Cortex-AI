@@ -74,42 +74,48 @@ function ChatInput({ onLoginClick }) {
       if (onLoginClick) onLoginClick()
       return
     }
+    const trimmedVal = value.trim()
+    if (!trimmedVal) return
+
     dispatch(setIsLoading(true))
     let conversation = selectedConversation
     if (!conversation) {
       dispatch(setMessages([]))
       const conv = await createConversation()
-      dispatch(setSelectedConversation(conv))
-
-      dispatch(addConversation(conv))
-      conversation = conv
+      if (conv && conv._id) {
+        dispatch(setSelectedConversation(conv))
+        dispatch(addConversation(conv))
+        conversation = conv
+      }
     }
 
-    if (conversation.title == "New Chat") {
-      await updateConversation({ id: conversation?._id, title: value.trim() })
-      dispatch(setConvTitle({ conversationId: conversation?._id, title: value.slice(0, 40) }))
+    if (conversation?.title === "New Chat") {
+      await updateConversation({ id: conversation?._id, title: trimmedVal })
+      dispatch(setConvTitle({ conversationId: conversation?._id, title: trimmedVal.slice(0, 40) }))
     }
 
-
-    console.log(selectedFile)
     const formData = new FormData()
-    formData.append("prompt", value.trim())
-    formData.append("conversationId", conversation?._id)
+    formData.append("prompt", trimmedVal)
+    if (conversation?._id) {
+      formData.append("conversationId", conversation._id)
+    }
     formData.append("agent", selectedAgent.toLowerCase())
     if (selectedFile) {
       formData.append("file", selectedFile)
     }
 
-
-
-    dispatch(addMessage({ role: "user", content: value.trim() }))
+    dispatch(addMessage({ role: "user", content: trimmedVal }))
     setValue("")
+    setSelectedFile(null)
+
     const data = await sendMessage(formData)
     dispatch(setIsLoading(false))
-    setSelectedFile(null)
-    dispatch(setArtifacts(data.artifacts || []))
-    dispatch(addMessage({ role: "assistant", content: data?.answer, images: data?.images }))
-    console.log(data)
+    if (data) {
+      dispatch(setArtifacts(data.artifacts || []))
+      dispatch(addMessage({ role: "assistant", content: data.answer || "No response generated.", images: data.images }))
+    } else {
+      dispatch(addMessage({ role: "assistant", content: "Sorry, I could not connect to the agent service. Please try again." }))
+    }
   }
 
   const agents = [
@@ -235,6 +241,14 @@ function ChatInput({ onLoginClick }) {
         <textarea
           placeholder='Ask Anything...'
           onChange={(e) => setValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault()
+              if (value.trim() && !isLoading) {
+                handleSendMessage()
+              }
+            }
+          }}
           value={value}
           className="w-full bg-transparent outline-none resize-none text-[14px] text-slate-200 placeholder:text-slate-600 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden disabled:opacity-50"
           rows={3}
