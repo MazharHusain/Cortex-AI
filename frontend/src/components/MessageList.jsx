@@ -63,7 +63,7 @@ function MessageList({ onSelectPrompt }) {
             Ask me anything — code, reasoning, analysis, documents, or create presentations with Indus GPT.
           </p>
 
-          {/* ChatGPT 2x2 Suggestion Cards */}
+          {/* ChatGPT 2x2 Suggestion Cards - Subtle color change only, no popup/scaling */}
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 w-full text-left'>
             {suggestions.map((item, i) => {
               const Icon = item.icon
@@ -71,10 +71,10 @@ function MessageList({ onSelectPrompt }) {
                 <button
                   key={i}
                   onClick={() => onSelectPrompt && onSelectPrompt(`${item.title} ${item.desc}`)}
-                  className='icon-pop p-4 rounded-2xl bg-[#2f2f2f]/60 hover:bg-[#2f2f2f] border border-white/[0.06] hover:border-purple-400/40 transition cursor-pointer flex flex-col gap-1.5 group text-left'
+                  className='p-4 rounded-2xl bg-[#2a2a2a] hover:bg-[#343434] border border-white/[0.06] hover:border-purple-400/30 transition-colors duration-150 cursor-pointer flex flex-col gap-1.5 text-left'
                 >
                   <div className='flex items-center gap-2'>
-                    <Icon size={16} className={`${item.color} group-hover:scale-110 transition-transform`} />
+                    <Icon size={16} className={item.color} />
                     <span className='text-[13.5px] font-medium text-slate-100'>{item.title}</span>
                   </div>
                   <span className='text-[12px] text-slate-400 pl-6'>{item.desc}</span>

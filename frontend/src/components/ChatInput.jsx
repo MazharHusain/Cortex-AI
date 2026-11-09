@@ -1,4 +1,4 @@
-import { ArrowUp, Code2, FileText, Globe, ImageIcon, MessageSquare, Mic, MicOff, Paperclip, Plus, Presentation, Sparkles, X, Zap } from 'lucide-react'
+import { ArrowUp, Code2, FileText, Globe, ImageIcon, MessageSquare, Mic, MicOff, Paperclip, Plus, Presentation, Search, Sparkles, X, Zap } from 'lucide-react'
 import React, { useEffect, useState, useRef } from 'react'
 import sendMessage from '../features/sendMessage'
 import { useDispatch, useSelector } from 'react-redux'
@@ -145,7 +145,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
     { id: "pdf", icon: FileText, label: "PDF" },
     { id: "ppt", icon: Presentation, label: "PPT" },
     { id: "vision", icon: ImageIcon, label: "Vision" },
-    { id: "search", icon: Globe, label: "Search" }
+    { id: "search", icon: Search, label: "Search" }
   ]
 
   const hasContent = Boolean(value.trim() || selectedFile)
@@ -205,8 +205,8 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
 
           {/* Bottom Controls Row: Tools on Left, Voice & Send on Right */}
           <div className='flex items-center justify-between pt-1 gap-2'>
-            {/* Left Controls: Plus file upload + Agent Pills with Light Purple Pop */}
-            <div className='flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-1'>
+            {/* Left Controls: Fixed Plus button + Smooth Agent Pills with room for popup */}
+            <div className='flex items-center gap-2 flex-1 min-w-0 py-1'>
               <input
                 type="file"
                 accept='.pdf,image/*'
@@ -218,6 +218,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
                 }}
               />
 
+              {/* Fixed Plus Button - Always visible, never hidden */}
               <button
                 type="button"
                 onClick={() => fileRef.current && fileRef.current.click()}
@@ -227,8 +228,8 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
                 <Plus size={18} />
               </button>
 
-              {/* Agent Pills */}
-              <div className='flex items-center gap-1'>
+              {/* Agent Pills Row: ample padding so full popup shape & search icon never cut off */}
+              <div className='flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-2 px-1 flex-1 min-w-0'>
                 {agents.map((agent) => {
                   const isActive = selectedAgent === agent.label
                   const Icon = agent.icon
@@ -237,10 +238,10 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
                       key={agent.id}
                       type="button"
                       onClick={() => setSelectedAgent(agent.label)}
-                      className={`icon-pop flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium cursor-pointer border shrink-0 ${
+                      className={`icon-pop flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium cursor-pointer border shrink-0 ${
                         isActive
                           ? "bg-purple-600/30 border-purple-400/60 text-purple-100 shadow-[0_0_12px_rgba(168,85,247,0.35)]"
-                          : "bg-white/[0.03] border-white/[0.06] text-purple-300/70 hover:bg-purple-600/15 hover:border-purple-400/40 hover:text-purple-100"
+                          : "bg-white/[0.04] border-white/[0.06] text-purple-300/70 hover:bg-purple-600/15 hover:border-purple-400/40 hover:text-purple-100"
                       }`}
                     >
                       <Icon size={12} className={isActive ? "text-purple-300" : "text-purple-400/70"} />
@@ -251,8 +252,8 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
               </div>
             </div>
 
-            {/* Right Controls: Mic & ChatGPT Send Circle with Purple Glow */}
-            <div className='flex items-center gap-2 shrink-0'>
+            {/* Right Controls: Mic & Send Button */}
+            <div className='flex items-center gap-2 shrink-0 py-1 pl-1'>
               <button
                 type="button"
                 onClick={toggleMic}
