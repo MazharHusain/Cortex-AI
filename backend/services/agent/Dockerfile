@@ -14,4 +14,4 @@ WORKDIR /app/services/agent
 
 EXPOSE 8003
 
-CMD ["npm", "start"]
+CMD ["node", "index.js"]

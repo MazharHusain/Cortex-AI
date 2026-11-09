@@ -14,4 +14,4 @@ WORKDIR /app/services/auth
 
 EXPOSE 8001
 
-CMD ["npm", "start"]
+CMD ["node", "index.js"]

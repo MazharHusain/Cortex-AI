@@ -9,11 +9,12 @@ import { updateConversation } from '../features/updateConversation'
 import { useRef } from 'react'
 
 
-function ChatInput() {
+function ChatInput({ onLoginClick }) {
   const [value, setValue] = useState("")
   const [selectedAgent, setSelectedAgent] = useState("Auto")
   const { selectedConversation } = useSelector(state => state.conversation)
   const { messages, isLoading } = useSelector(state => state.message)
+  const { userData } = useSelector(state => state.user)
   const [selectedFile, setSelectedFile] = useState(null)
   const [listening, setListening] = useState(false)
   const recognitionRef = useRef(null)
@@ -69,6 +70,10 @@ function ChatInput() {
 
 
   const handleSendMessage = async () => {
+    if (!userData) {
+      if (onLoginClick) onLoginClick()
+      return
+    }
     dispatch(setIsLoading(true))
     let conversation = selectedConversation
     if (!conversation) {

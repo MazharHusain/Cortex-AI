@@ -10,7 +10,7 @@ import { createConversation } from '../features/createConversation'
 import logOut from '../features/logOut'
 import { setUserdata } from '../redux/userSlice'
 import BillingDrawer from './BillingDrawer'
-function SideBar() {
+function SideBar({ onLoginClick }) {
     const [collapsed, setCollapsed] = useState(false)
     const dispatch = useDispatch()
     const [imageError, setImageError] = useState(false)
@@ -70,7 +70,7 @@ function SideBar() {
 
                 </div>
 
-<div className='"relative shrink-0'>
+<div className='relative shrink-0' onClick={!userData ? onLoginClick : undefined}>
                                 {
                                     (userData?.avatar && !imageError)
                                         ?
@@ -80,7 +80,7 @@ function SideBar() {
                                             alt={"image"}
                                             onError={() => setImageError(true)} />
                                         :
-                                        <div className='w-9 h-9 rounded-[10px] bg-white/[0.06] flex items-center justify-center'>
+                                        <div className='w-9 h-9 rounded-[10px] bg-white/[0.06] hover:bg-white/[0.1] flex items-center justify-center cursor-pointer transition-colors' title={!userData ? "Click to Login" : ""}>
                                             <User size={15} className="text-slate-400" />
                                         </div>
 
@@ -187,7 +187,7 @@ function SideBar() {
                 <div className='px-3.5 py-3.5'>
                     {userData ? (
                         <div className='flex items-center gap-2.5 cursor-pointer rounded-xl px-3 py-2.5 hover:bg-white/[0.05] transition-colors duration-150'>
-                            <div className='"relative shrink-0'>
+                            <div className='relative shrink-0' onClick={!userData ? onLoginClick : undefined}>
                                 {
                                     (userData?.avatar && !imageError)
                                         ?
@@ -197,7 +197,7 @@ function SideBar() {
                                             alt={"image"}
                                             onError={() => setImageError(true)} />
                                         :
-                                        <div className='w-9 h-9 rounded-[10px] bg-white/[0.06] flex items-center justify-center'>
+                                        <div className='w-9 h-9 rounded-[10px] bg-white/[0.06] hover:bg-white/[0.1] flex items-center justify-center cursor-pointer transition-colors' title={!userData ? "Click to Login" : ""}>
                                             <User size={15} className="text-slate-400" />
                                         </div>
 
@@ -225,7 +225,9 @@ function SideBar() {
                             </div>
                         </div>)
                         :
-                        <button className='w-full flex items-center justify-center gap-2 text-sm font-medium text-slate-200 bg-white/[0.05] border border-white/[0.08] rounded-xl py-[11px] cursor-pointer hover:bg-white/[0.08] transition-colors duration-150'>
+                        <button 
+                            onClick={onLoginClick}
+                            className='w-full flex items-center justify-center gap-2 text-sm font-medium text-slate-200 bg-white/[0.05] border border-white/[0.08] rounded-xl py-[11px] cursor-pointer hover:bg-white/[0.08] hover:text-white transition-colors duration-150'>
                             Login
                         </button>}
                 </div>

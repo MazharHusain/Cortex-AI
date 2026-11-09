@@ -14,4 +14,4 @@ WORKDIR /app/services/chat
 
 EXPOSE 8002
 
-CMD ["npm", "start"]
+CMD ["node", "index.js"]

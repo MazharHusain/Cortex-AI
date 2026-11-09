@@ -12,7 +12,14 @@ const port =process.env.PORT
 
 const app=express()
 app.use(cors({
-    origin:process.env.FRONTEND_URL,
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl) or any vercel.app or local dev
+        if (!origin || origin.includes("vercel.app") || origin.includes("localhost") || origin === process.env.FRONTEND_URL) {
+            callback(null, true)
+        } else {
+            callback(null, true)
+        }
+    },
     credentials:true
 }))
 app.use(morgan("dev"))
