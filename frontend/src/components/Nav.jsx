@@ -24,13 +24,13 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
 
   return (
     <header className='h-14 flex items-center justify-between px-4 border-b border-white/[0.06] bg-[#212121] select-none shrink-0 z-10'>
-      {/* Left: Sidebar Toggle & Model Selector */}
+      {/* Left: Sidebar Toggle, New Chat, & Model Selector */}
       <div className='flex items-center gap-2'>
         {onToggleSidebar && (
           <button
             onClick={onToggleSidebar}
             title="Toggle sidebar"
-            className='flex items-center justify-center w-9 h-9 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.08] transition-colors duration-150 cursor-pointer border-none bg-transparent'
+            className='icon-pop flex items-center justify-center w-9 h-9 rounded-xl text-purple-300 hover:text-white bg-white/[0.04] hover:bg-purple-600/20 border border-transparent hover:border-purple-400/40 cursor-pointer'
           >
             <PanelLeft size={18} />
           </button>
@@ -39,47 +39,49 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
         <button
           onClick={handleNewChat}
           title="New chat"
-          className='flex items-center justify-center w-9 h-9 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.08] transition-colors duration-150 cursor-pointer border-none bg-transparent lg:hidden'
+          className='icon-pop btn-fancy-purple flex items-center justify-center w-9 h-9 rounded-xl cursor-pointer border-none lg:hidden'
         >
           <Plus size={18} />
         </button>
 
-        {/* ChatGPT-style Model Pill */}
-        <div className='flex items-center gap-1.5 px-3 py-1.5 rounded-xl hover:bg-white/[0.06] cursor-pointer transition-colors text-slate-200 group'>
+        {/* ChatGPT-style Model Pill with Purple Pop */}
+        <div className='icon-pop flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-white/[0.03] hover:bg-purple-600/15 border border-white/[0.06] hover:border-purple-400/40 cursor-pointer text-slate-200 group'>
           <img src="/logo.png" alt="Indus GPT" className='w-5 h-5 rounded-md object-contain' />
           <span className='text-[15px] font-semibold tracking-tight text-white'>Indus GPT</span>
-          <span className='text-[11px] font-medium text-purple-400 bg-purple-500/15 border border-purple-500/30 px-1.5 py-0.2 rounded-md ml-1'>4o</span>
-          <ChevronDown size={14} className='text-slate-500 group-hover:text-slate-300 ml-0.5 transition-transform' />
+          <span className='text-[11px] font-medium text-purple-300 bg-purple-500/20 border border-purple-400/30 px-1.5 py-0.2 rounded-md ml-0.5 shadow-[0_0_10px_rgba(168,85,247,0.3)]'>
+            4o
+          </span>
+          <ChevronDown size={14} className='text-purple-400 group-hover:text-purple-200 ml-0.5 transition-transform group-hover:translate-y-0.5' />
         </div>
 
         {selectedConversation && selectedConversation.title !== "New Chat" && (
-          <span className='hidden md:inline-block text-[13px] text-slate-400 max-w-[200px] truncate ml-2 pl-3 border-l border-white/10'>
+          <span className='hidden md:inline-block text-[13px] text-purple-200/70 max-w-[200px] truncate ml-2 pl-3 border-l border-white/10'>
             {selectedConversation.title}
           </span>
         )}
       </div>
 
-      {/* Right: Plan/Credits & Profile/Login */}
-      <div className='flex items-center gap-2'>
+      {/* Right: Plan/Credits & Fancy Purple Login Button */}
+      <div className='flex items-center gap-2.5'>
         {userData ? (
           <>
             <button
               onClick={onOpenBilling}
-              className='hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] text-[12px] font-medium text-slate-300 transition cursor-pointer'
+              className='icon-pop hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 hover:border-purple-400/60 text-[12px] font-medium text-purple-200 cursor-pointer shadow-[0_0_12px_rgba(168,85,247,0.2)]'
             >
-              <Sparkles size={13} className='text-amber-400' />
+              <Sparkles size={13} className='text-purple-400' />
               <span>{userData.credits ?? 100} credits</span>
             </button>
 
             <div
               onClick={onOpenBilling}
               title={userData.name || "User"}
-              className='w-8 h-8 rounded-full overflow-hidden bg-purple-600/30 border border-purple-500/40 flex items-center justify-center cursor-pointer hover:ring-2 hover:ring-purple-500/40 transition'
+              className='icon-pop w-9 h-9 rounded-full overflow-hidden bg-gradient-to-tr from-purple-600 to-indigo-600 border border-purple-400/40 flex items-center justify-center cursor-pointer shadow-[0_0_14px_rgba(168,85,247,0.35)]'
             >
               {userData.avatar ? (
                 <img src={userData.avatar} alt={userData.name} className='w-full h-full object-cover' />
               ) : (
-                <span className='text-xs font-semibold text-purple-200'>
+                <span className='text-xs font-semibold text-white'>
                   {userData.name ? userData.name[0].toUpperCase() : "U"}
                 </span>
               )}
@@ -88,9 +90,9 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
         ) : (
           <button
             onClick={onLoginClick}
-            className='flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white text-black hover:bg-slate-200 text-xs font-semibold tracking-wide transition cursor-pointer shadow-sm'
+            className='btn-fancy-purple flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide cursor-pointer border-none'
           >
-            Log in
+            Log in / Sign up
           </button>
         )}
       </div>

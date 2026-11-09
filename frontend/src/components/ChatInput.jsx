@@ -153,13 +153,13 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
   return (
     <div className='w-full bg-[#212121] px-4 pb-3 pt-1 select-none'>
       <div className='max-w-3xl mx-auto'>
-        {/* ChatGPT Rounded-3xl Capsule Box */}
-        <div className='bg-[#2f2f2f] rounded-[26px] border border-white/[0.08] shadow-lg p-2.5 px-4 transition-all focus-within:border-white/20'>
+        {/* ChatGPT Rounded-3xl Capsule Box with Light Purple Accent on Focus */}
+        <div className='bg-[#2f2f2f] rounded-[26px] border border-white/[0.08] shadow-xl p-2.5 px-4 transition-all focus-within:border-purple-400/50 focus-within:shadow-[0_0_20px_rgba(168,85,247,0.25)]'>
           
           {/* File Attachment Preview */}
           {selectedFile && (
             <div className='mb-2 pt-1'>
-              <div className='inline-flex items-center gap-2 rounded-xl bg-white/[0.08] border border-white/10 px-3 py-1.5'>
+              <div className='inline-flex items-center gap-2 rounded-xl bg-purple-500/10 border border-purple-400/30 px-3 py-1.5 shadow-[0_0_12px_rgba(168,85,247,0.2)]'>
                 {selectedFile.type === "application/pdf" ? (
                   <FileText size={16} className="text-red-400 shrink-0" />
                 ) : (
@@ -170,12 +170,12 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
                   />
                 )}
                 <div className='min-w-0 max-w-[180px]'>
-                  <p className='text-xs text-white truncate'>{selectedFile.name}</p>
-                  <p className='text-[10px] text-slate-400'>{Math.ceil(selectedFile.size / 1024)} KB</p>
+                  <p className='text-xs text-purple-100 truncate font-medium'>{selectedFile.name}</p>
+                  <p className='text-[10px] text-purple-300/70'>{Math.ceil(selectedFile.size / 1024)} KB</p>
                 </div>
                 <button
                   type="button"
-                  className='ml-1 text-slate-400 hover:text-white cursor-pointer border-none bg-transparent'
+                  className='icon-pop ml-1 text-purple-300 hover:text-white cursor-pointer border-none bg-transparent'
                   onClick={() => {
                     setSelectedFile(null)
                     if (fileRef.current) fileRef.current.value = ""
@@ -187,7 +187,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
             </div>
           )}
 
-          {/* Text Input Area */}
+          {/* Text Input Area: Purple Text and Caret matching the icons */}
           <textarea
             ref={textareaRef}
             placeholder='Message Indus GPT...'
@@ -200,12 +200,12 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
             }}
             value={value}
             rows={1}
-            className="w-full bg-transparent outline-none resize-none text-[15px] text-[#ececec] placeholder:text-[#8e8e8e] leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-[180px] pt-1"
+            className="w-full bg-transparent outline-none resize-none text-[15px] text-purple-100 placeholder:text-purple-300/40 caret-purple-400 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-[180px] pt-1"
           />
 
           {/* Bottom Controls Row: Tools on Left, Voice & Send on Right */}
           <div className='flex items-center justify-between pt-1 gap-2'>
-            {/* Left Controls: Plus file upload + Agent Pills */}
+            {/* Left Controls: Plus file upload + Agent Pills with Light Purple Pop */}
             <div className='flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-1'>
               <input
                 type="file"
@@ -222,7 +222,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
                 type="button"
                 onClick={() => fileRef.current && fileRef.current.click()}
                 title="Attach files (PDF, image)"
-                className='flex items-center justify-center w-8 h-8 rounded-full text-slate-400 hover:text-white hover:bg-white/[0.08] transition cursor-pointer border-none bg-transparent shrink-0'
+                className='icon-pop flex items-center justify-center w-8 h-8 rounded-full text-purple-300 hover:text-white hover:bg-purple-600/20 border border-transparent hover:border-purple-400/40 cursor-pointer bg-transparent shrink-0'
               >
                 <Plus size={18} />
               </button>
@@ -237,13 +237,13 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
                       key={agent.id}
                       type="button"
                       onClick={() => setSelectedAgent(agent.label)}
-                      className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition cursor-pointer border shrink-0 ${
+                      className={`icon-pop flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium cursor-pointer border shrink-0 ${
                         isActive
-                          ? "bg-purple-600/25 border-purple-500/40 text-purple-200"
-                          : "bg-white/[0.03] border-white/[0.06] text-slate-400 hover:bg-white/[0.06] hover:text-slate-200"
+                          ? "bg-purple-600/30 border-purple-400/60 text-purple-100 shadow-[0_0_12px_rgba(168,85,247,0.35)]"
+                          : "bg-white/[0.03] border-white/[0.06] text-purple-300/70 hover:bg-purple-600/15 hover:border-purple-400/40 hover:text-purple-100"
                       }`}
                     >
-                      <Icon size={12} className={isActive ? "text-purple-300" : "text-slate-400"} />
+                      <Icon size={12} className={isActive ? "text-purple-300" : "text-purple-400/70"} />
                       <span>{agent.label}</span>
                     </button>
                   )
@@ -251,31 +251,31 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
               </div>
             </div>
 
-            {/* Right Controls: Mic & ChatGPT Send Circle */}
+            {/* Right Controls: Mic & ChatGPT Send Circle with Purple Glow */}
             <div className='flex items-center gap-2 shrink-0'>
               <button
                 type="button"
                 onClick={toggleMic}
                 title={listening ? "Stop listening" : "Voice input"}
-                className={`flex items-center justify-center w-8 h-8 rounded-full transition cursor-pointer border-none ${
+                className={`icon-pop flex items-center justify-center w-8 h-8 rounded-full cursor-pointer border-none ${
                   listening
-                    ? "bg-red-500 text-white animate-pulse"
-                    : "text-slate-400 hover:text-white hover:bg-white/[0.08] bg-transparent"
+                    ? "bg-red-500 text-white animate-pulse shadow-[0_0_14px_rgba(239,68,68,0.6)]"
+                    : "text-purple-300 hover:text-white hover:bg-purple-600/20 bg-transparent"
                 }`}
               >
                 {listening ? <Mic size={16} /> : <MicOff size={16} />}
               </button>
 
-              {/* ChatGPT Iconic Up-Arrow Circular Send Button */}
+              {/* Up-Arrow Circular Send Button (Purple Glow Pop) */}
               <button
                 type="button"
                 disabled={!hasContent || isLoading}
                 onClick={handleSendMessage}
                 title="Send message"
-                className={`flex items-center justify-center w-8 h-8 rounded-full transition-all duration-150 cursor-pointer border-none ${
+                className={`icon-pop flex items-center justify-center w-8 h-8 rounded-full border-none cursor-pointer ${
                   hasContent && !isLoading
-                    ? "bg-white text-black hover:bg-slate-200 shadow-md scale-100"
-                    : "bg-white/[0.1] text-slate-500 cursor-not-allowed scale-95 opacity-50"
+                    ? "btn-fancy-purple text-white shadow-[0_0_16px_rgba(168,85,247,0.5)]"
+                    : "bg-white/[0.08] text-purple-300/40 cursor-not-allowed opacity-50"
                 }`}
               >
                 <ArrowUp size={16} strokeWidth={2.6} />
@@ -284,8 +284,8 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
           </div>
         </div>
 
-        {/* ChatGPT Footer Disclaimer */}
-        <p className='text-[11.5px] text-[#8e8e8e] text-center mt-2 select-none'>
+        {/* Footer Disclaimer */}
+        <p className='text-[11.5px] text-purple-300/50 text-center mt-2 select-none'>
           Indus GPT can make mistakes. Verify important info.
         </p>
       </div>

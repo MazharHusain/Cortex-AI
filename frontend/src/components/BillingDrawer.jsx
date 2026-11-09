@@ -64,9 +64,9 @@ function BillingDrawer({ open, onClose }) {
                                 Plans & Credits
                             </div>
                         </div>
-                        <button onClick={onClose} className="w-9 h-9 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center"
+                        <button onClick={onClose} className="icon-pop w-9 h-9 rounded-lg bg-white/5 hover:bg-purple-600/20 flex items-center justify-center border border-transparent hover:border-purple-400/40 cursor-pointer"
                         >
-                            <X size={18} className="text-slate-300" />
+                            <X size={18} className="text-purple-300" />
                         </button>
                     </div>
 
@@ -113,17 +113,17 @@ function BillingDrawer({ open, onClose }) {
 
                     <div className='px-5 flex-1 overflow-auto space-y-4'>
 
-                        <div className='rounded-xl border border-white/10 p-4'>
+                        <div className='rounded-xl border border-white/10 p-4 bg-white/[0.02]'>
                             <h3 className='text-white font-semibold'>Starter Plan</h3>
-                            <p className='text-indigo-400 text-2xl font-bold mt-2'>₹199</p>
+                            <p className='text-purple-400 text-2xl font-bold mt-2'>₹199</p>
                             <p className='text-slate-400 text-sm mt-1'>500 Credits</p>
-                            <button className='mt-4 w-full rounded-lg bg-indigo-600 hover:bg-indigo-700 py-2 text-white' onClick={() => handleUpgrade("starter")}>Upgrade</button>
+                            <button className='icon-pop btn-fancy-purple mt-4 w-full rounded-xl py-2 text-white font-medium cursor-pointer border-none' onClick={() => handleUpgrade("starter")}>Upgrade</button>
                         </div>
-                        <div className='rounded-xl border border-white/10 p-4'>
+                        <div className='rounded-xl border border-white/10 p-4 bg-white/[0.02]'>
                             <h3 className='text-white font-semibold'>Pro Plan</h3>
-                            <p className='text-indigo-400 text-2xl font-bold mt-2'>₹499</p>
+                            <p className='text-purple-400 text-2xl font-bold mt-2'>₹499</p>
                             <p className='text-slate-400 text-sm mt-1'>1000 Credits</p>
-                            <button className='mt-4 w-full rounded-lg bg-indigo-600 hover:bg-indigo-700 py-2 text-white' onClick={() => handleUpgrade("pro")}>Upgrade</button>
+                            <button className='icon-pop btn-fancy-purple mt-4 w-full rounded-xl py-2 text-white font-medium cursor-pointer border-none' onClick={() => handleUpgrade("pro")}>Upgrade</button>
                         </div>
                     </div>
 

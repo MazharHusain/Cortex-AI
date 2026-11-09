@@ -115,14 +115,16 @@ function Home() {
 
                         {/* Google Sign In Button */}
                         <button
-                            className='w-full flex items-center justify-center gap-3 py-3 rounded-2xl text-[14px] font-semibold text-black bg-white hover:bg-slate-200 transition-all duration-150 cursor-pointer disabled:opacity-60 shadow-md border-none'
+                            className='icon-pop w-full flex items-center justify-center gap-3 py-3 rounded-2xl text-[14px] font-semibold text-white btn-fancy-purple cursor-pointer disabled:opacity-60 shadow-lg border-none'
                             onClick={googleLogin}
                             disabled={loginLoading}
                         >
                             {loginLoading ? (
-                                <div className='w-4 h-4 border-2 border-slate-700 border-t-transparent rounded-full animate-spin'></div>
+                                <div className='w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin'></div>
                             ) : (
-                                <FcGoogle size={18} />
+                                <div className='w-6 h-6 rounded-full bg-white flex items-center justify-center'>
+                                    <FcGoogle size={18} />
+                                </div>
                             )}
                             <span>{loginLoading ? 'Signing in...' : 'Continue with Google'}</span>
                         </button>

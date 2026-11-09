@@ -71,7 +71,7 @@ function MessageList({ onSelectPrompt }) {
                 <button
                   key={i}
                   onClick={() => onSelectPrompt && onSelectPrompt(`${item.title} ${item.desc}`)}
-                  className='p-4 rounded-2xl bg-[#2f2f2f]/60 hover:bg-[#2f2f2f] border border-white/[0.06] hover:border-white/[0.12] transition-all duration-200 cursor-pointer flex flex-col gap-1.5 group text-left'
+                  className='icon-pop p-4 rounded-2xl bg-[#2f2f2f]/60 hover:bg-[#2f2f2f] border border-white/[0.06] hover:border-purple-400/40 transition cursor-pointer flex flex-col gap-1.5 group text-left'
                 >
                   <div className='flex items-center gap-2'>
                     <Icon size={16} className={`${item.color} group-hover:scale-110 transition-transform`} />

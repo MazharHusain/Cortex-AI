@@ -204,7 +204,7 @@ function MessageBubble({ role, content, images }) {
           <button
             onClick={copyMessage}
             title="Copy response"
-            className='p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/[0.08] transition cursor-pointer border-none bg-transparent'
+            className='icon-pop p-1.5 rounded-lg text-purple-300 hover:text-white hover:bg-purple-600/20 border border-transparent hover:border-purple-400/40 transition cursor-pointer bg-transparent'
           >
             {copiedMessage ? <Check size={14} className='text-emerald-400' /> : <Copy size={14} />}
           </button>

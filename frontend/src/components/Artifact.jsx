@@ -91,15 +91,15 @@ function Artifact() {
   const PanelContent = ({onClose}) => {
     return (
       <>
-        {!collapsed ? <div className='flex flex-col h-full bg-[#0d0f14]'>
+        {!collapsed ? <div className='flex flex-col h-full bg-[#171717]'>
 
           <div className='h-14 px-4 border-b border-white/[0.06] flex items-center gap-3 shrink-0'>
-            <button className='flex items-center justify-center w-7 h-7 rounded-lg text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer shrink-0' onClick={onClose ?? (() => setCollapsed(true))}>
+            <button className='icon-pop flex items-center justify-center w-7 h-7 rounded-lg text-purple-300 hover:text-white hover:bg-purple-600/20 border border-transparent hover:border-purple-400/40 cursor-pointer shrink-0 bg-transparent' onClick={onClose ?? (() => setCollapsed(true))}>
               {onClose?<X size={15}/>:<PanelRightClose size={16} />}
             </button>
             <div className='flex items-center gap-2 flex-1 min-w-0'>
-              <div className='flex items-center justify-center w-6 h-6 rounded-md bg-indigo-500/10 border border-indigo-500/20 shrink-0'>
-                <Code2 className="text-indigo-400" size={12} />
+              <div className='flex items-center justify-center w-6 h-6 rounded-md bg-purple-500/10 border border-purple-500/20 shrink-0'>
+                <Code2 className="text-purple-400" size={12} />
               </div>
               <div className='text-[13px] font-medium text-slate-200 truncate'>{artifacts[0]?.title}</div>
             </div>
@@ -107,7 +107,7 @@ function Artifact() {
             <div className='flex items-center gap-1 shrink-0'>
               <button
                 onClick={handleCopy}
-                className='flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium text-slate-400 hover:text-slate-200 hover:bg-white/[0.05] rounded-lg transition-colors duration-150 bg-transparent border-none cursor-pointer'
+                className='icon-pop flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] font-medium text-purple-300 hover:text-white hover:bg-purple-600/20 border border-transparent hover:border-purple-400/40 rounded-lg cursor-pointer bg-transparent'
               >
                 {copied ? <Check size={15} /> : <Copy size={15} />}
               </button>
@@ -116,15 +116,15 @@ function Artifact() {
               <div className='flex items-center gap-1 bg-white/[0.04] border border-white/[0.06] p-1 rounded-lg'>
                 <button
                   onClick={() => setTab("code")}
-                  className={`flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-md transition-colors duration-150
-                  ${tab === "code" ? "bg-indigo-500 text-white" : "text-slate-500 hover:text-slate-200"}`}
+                  className={`icon-pop flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-md cursor-pointer border-none
+                  ${tab === "code" ? "bg-purple-600 text-white shadow-[0_0_10px_rgba(168,85,247,0.3)]" : "text-purple-300/70 hover:text-white bg-transparent"}`}
                 >
                   <Code2 size={11} /> Code
                 </button>
                 <button
                   onClick={() => setTab("preview")}
-                  className={`flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-md transition-colors duration-150
-                  ${tab === "preview" ? "bg-indigo-500 text-white" : "text-slate-500 hover:text-slate-200"}`}
+                  className={`icon-pop flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded-md cursor-pointer border-none
+                  ${tab === "preview" ? "bg-purple-600 text-white shadow-[0_0_10px_rgba(168,85,247,0.3)]" : "text-purple-300/70 hover:text-white bg-transparent"}`}
                 >
                   <Eye size={11} /> Preview
                 </button>
@@ -136,10 +136,10 @@ function Artifact() {
               artifacts[0]?.files?.map((f, index) => (
                 <button
                   onClick={() => setActiveFile(index)}
-                  className={`px-4 py-2.5 text-[11px] font-medium whitespace-nowrap transition-colors duration-150 border-r border-white/[0.05] relative cursor-pointer bg-transparent   ${activeFile === index ? "text-indigo-400" : "text-slate-500 hover:text-slate-300"}`}
+                  className={`px-4 py-2.5 text-[11px] font-medium whitespace-nowrap border-r border-white/[0.05] relative cursor-pointer bg-transparent ${activeFile === index ? "text-purple-300 font-semibold" : "text-slate-400 hover:text-slate-200"}`}
                 >
                   {f?.name}
-                  {activeFile === index && <div className='absolute bottom-0 left-0 right-0 h-[2px] bg-indigo-500 rounded-t-full' />}
+                  {activeFile === index && <div className='absolute bottom-0 left-0 right-0 h-[2px] bg-purple-500 rounded-t-full shadow-[0_0_8px_rgba(168,85,247,0.6)]' />}
 
                 </button>
               ))

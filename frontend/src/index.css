@@ -1,1 +1,46 @@
 @import "tailwindcss";
+
+::selection {
+  background-color: rgba(168, 85, 247, 0.45);
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background-color: rgba(168, 85, 247, 0.45);
+  color: #ffffff;
+}
+
+/* Light purple pop-up effect on hover / click for icons and buttons */
+.icon-pop {
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.icon-pop:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 18px rgba(192, 132, 252, 0.5);
+  border-color: rgba(192, 132, 252, 0.65) !important;
+}
+
+.icon-pop:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 10px rgba(192, 132, 252, 0.7);
+}
+
+/* Fancy Purple Glowing Buttons */
+.btn-fancy-purple {
+  background: linear-gradient(135deg, #9333ea 0%, #7e22ce 50%, #6366f1 100%);
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.4);
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.btn-fancy-purple:hover {
+  background: linear-gradient(135deg, #a855f7 0%, #9333ea 50%, #4f46e5 100%);
+  box-shadow: 0 0 24px rgba(192, 132, 252, 0.75);
+  transform: translateY(-1px) scale(1.03);
+}
+
+.btn-fancy-purple:active {
+  transform: translateY(0px) scale(0.98);
+  box-shadow: 0 0 10px rgba(192, 132, 252, 0.5);
+}
