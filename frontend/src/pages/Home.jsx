@@ -23,7 +23,8 @@ function Home() {
             setShowLoginModal(false)
         } catch (error) {
             console.log(error)
-            setLoginError('Login failed. Please try again.')
+            const msg = error.response?.data?.message || error.message || 'Login failed. Please try again.'
+            setLoginError(msg)
         }
     }
 
@@ -41,7 +42,7 @@ function Home() {
             } else if (error.code === 'auth/cancelled-popup-request' || error.code === 'auth/popup-closed-by-user') {
                 // user closed popup - ignore silently
             } else {
-                setLoginError('Google login failed. Please try again.')
+                setLoginError(error.message || error.code || 'Google login failed. Please try again.')
             }
         } finally {
             setLoginLoading(false)
