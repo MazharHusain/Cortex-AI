@@ -1,4 +1,4 @@
-import { ArrowUp, Code2, FileText, Globe, ImageIcon, MessageSquare, Mic, MicOff, Paperclip, Plus, Presentation, Search, Sparkles, X, Zap } from 'lucide-react'
+import { ArrowUp, Code2, FileText, ImageIcon, MessageSquare, Mic, MicOff, Plus, Presentation, Search, X, Zap } from 'lucide-react'
 import React, { useEffect, useState, useRef } from 'react'
 import sendMessage from '../features/sendMessage'
 import { useDispatch, useSelector } from 'react-redux'
@@ -11,7 +11,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
   const [value, setValue] = useState("")
   const [selectedAgent, setSelectedAgent] = useState("Auto")
   const { selectedConversation } = useSelector(state => state.conversation)
-  const { messages, isLoading } = useSelector(state => state.message)
+  const { isLoading } = useSelector(state => state.message)
   const { userData } = useSelector(state => state.user)
   const [selectedFile, setSelectedFile] = useState(null)
   const [listening, setListening] = useState(false)
@@ -20,7 +20,6 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
   const textareaRef = useRef(null)
   const dispatch = useDispatch()
 
-  // Handle external suggestion prompts
   useEffect(() => {
     if (initialPrompt) {
       setValue(initialPrompt)
@@ -31,7 +30,6 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
     }
   }, [initialPrompt])
 
-  // Speech Recognition Setup
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
     if (!SpeechRecognition) return
@@ -70,7 +68,6 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
     }
   }
 
-  // Auto-resize textarea
   const handleInputChange = (e) => {
     setValue(e.target.value)
     if (textareaRef.current) {
@@ -153,10 +150,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
   return (
     <div className='w-full bg-[#212121] px-4 pb-3 pt-1 select-none'>
       <div className='max-w-3xl mx-auto'>
-        {/* ChatGPT Rounded-3xl Capsule Box with Light Purple Accent on Focus */}
         <div className='bg-[#2f2f2f] rounded-[26px] border border-white/[0.08] shadow-xl p-2.5 px-4 transition-all focus-within:border-purple-400/50 focus-within:shadow-[0_0_20px_rgba(168,85,247,0.25)]'>
-          
-          {/* File Attachment Preview */}
           {selectedFile && (
             <div className='mb-2 pt-1'>
               <div className='inline-flex items-center gap-2 rounded-xl bg-purple-500/10 border border-purple-400/30 px-3 py-1.5 shadow-[0_0_12px_rgba(168,85,247,0.2)]'>
@@ -187,7 +181,6 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
             </div>
           )}
 
-          {/* Text Input Area: Purple Text and Caret matching the icons */}
           <textarea
             ref={textareaRef}
             placeholder='Message Indus GPT...'
@@ -203,9 +196,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
             className="w-full bg-transparent outline-none resize-none text-[15px] text-purple-100 placeholder:text-purple-300/40 caret-purple-400 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-[180px] pt-1"
           />
 
-          {/* Bottom Controls Row: Tools on Left, Voice & Send on Right */}
           <div className='flex items-center justify-between pt-1 gap-2'>
-            {/* Left Controls: Fixed Plus button + Smooth Agent Pills with room for popup */}
             <div className='flex items-center gap-2 flex-1 min-w-0 py-1'>
               <input
                 type="file"
@@ -218,7 +209,6 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
                 }}
               />
 
-              {/* Fixed Plus Button - Always visible, never hidden */}
               <button
                 type="button"
                 onClick={() => fileRef.current && fileRef.current.click()}
@@ -228,7 +218,6 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
                 <Plus size={18} />
               </button>
 
-              {/* Agent Pills Row: ample padding so full popup shape & search icon never cut off */}
               <div className='flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-2 px-1 flex-1 min-w-0'>
                 {agents.map((agent) => {
                   const isActive = selectedAgent === agent.label
@@ -252,7 +241,6 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
               </div>
             </div>
 
-            {/* Right Controls: Mic & Send Button */}
             <div className='flex items-center gap-2 shrink-0 py-1 pl-1'>
               <button
                 type="button"
@@ -267,7 +255,6 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
                 {listening ? <Mic size={16} /> : <MicOff size={16} />}
               </button>
 
-              {/* Up-Arrow Circular Send Button (Purple Glow Pop) */}
               <button
                 type="button"
                 disabled={!hasContent || isLoading}
@@ -285,7 +272,6 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
           </div>
         </div>
 
-        {/* Footer Disclaimer */}
         <p className='text-[11.5px] text-purple-300/50 text-center mt-2 select-none'>
           Indus GPT can make mistakes. Verify important info.
         </p>

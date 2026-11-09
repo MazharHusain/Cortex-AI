@@ -24,7 +24,6 @@ function Home() {
             dispatch(setUserdata(data))
             setShowLoginModal(false)
         } catch (error) {
-            console.log(error)
             const msg = error.response?.data?.message || error.message || 'Login failed. Please try again.'
             setLoginError(msg)
         }
@@ -38,7 +37,6 @@ function Home() {
             const token = await result.user.getIdToken()
             await handleLogin(token)
         } catch (error) {
-            console.log(error)
             if (error.code === 'auth/popup-blocked') {
                 setLoginError('Popup blocked. Please allow popups for this site.')
             } else if (error.code === 'auth/cancelled-popup-request' || error.code === 'auth/popup-closed-by-user') {
@@ -51,11 +49,10 @@ function Home() {
         }
     }
 
-    // Show spinner while checking initial session
     if (loading) {
         return (
             <div className='h-screen flex flex-col items-center justify-center bg-[#212121] gap-3'>
-                <div className='w-12 h-12 rounded-2xl bg-white/[0.05] p-2 flex items-center justify-center animate-pulse'>
+                <div className='w-14 h-14 rounded-2xl bg-white/[0.05] p-2 flex items-center justify-center animate-pulse'>
                     <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' />
                 </div>
                 <div className='w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin'></div>
@@ -78,7 +75,6 @@ function Home() {
 
             <Artifact />
 
-            {/* ChatGPT-styled Login Modal */}
             {showLoginModal && !userData && (
                 <div
                     className='fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4'
@@ -88,7 +84,6 @@ function Home() {
                         className='w-full max-w-[360px] bg-[#171717] border border-white/[0.1] rounded-3xl p-7 flex flex-col gap-6 shadow-2xl relative'
                         onClick={e => e.stopPropagation()}
                     >
-                        {/* Close button */}
                         <button
                             onClick={() => setShowLoginModal(false)}
                             className='absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-full hover:bg-white/[0.08] transition cursor-pointer border-none bg-transparent'
@@ -96,9 +91,8 @@ function Home() {
                             <X size={18} />
                         </button>
 
-                        {/* Logo & Heading */}
                         <div className='flex flex-col items-center text-center gap-3 pt-2'>
-                            <div className='w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-600/30 to-blue-500/30 border border-white/10 p-1.5 shadow-xl flex items-center justify-center'>
+                            <div className='w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600/30 to-blue-500/30 border border-white/10 p-1.5 shadow-xl flex items-center justify-center'>
                                 <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' />
                             </div>
                             <div className='space-y-1'>
@@ -113,7 +107,6 @@ function Home() {
                             </p>
                         )}
 
-                        {/* Google Sign In Button */}
                         <button
                             className='icon-pop w-full flex items-center justify-center gap-3 py-3 rounded-2xl text-[14px] font-semibold text-white btn-fancy-purple cursor-pointer disabled:opacity-60 shadow-lg border-none'
                             onClick={googleLogin}

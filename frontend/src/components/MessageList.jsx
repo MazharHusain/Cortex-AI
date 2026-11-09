@@ -49,9 +49,8 @@ function MessageList({ onSelectPrompt }) {
     <div className='flex-1 overflow-y-auto px-4 md:px-6 py-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-[#212121]'>
       {messages.length === 0 || !selectedConversation ? (
         <div className="h-full flex flex-col items-center justify-center max-w-2xl mx-auto px-4 text-center my-auto">
-          {/* ChatGPT-style Large Centered Logo */}
           <div className='relative mb-5 flex flex-col items-center'>
-            <div className='w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600/30 to-blue-500/30 p-1 border border-white/10 shadow-2xl flex items-center justify-center'>
+            <div className='w-20 h-20 rounded-2xl bg-gradient-to-tr from-purple-600/30 to-blue-500/30 p-1.5 border border-white/10 shadow-2xl flex items-center justify-center'>
               <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' />
             </div>
           </div>
@@ -63,7 +62,6 @@ function MessageList({ onSelectPrompt }) {
             Ask me anything — code, reasoning, analysis, documents, or create presentations with Indus GPT.
           </p>
 
-          {/* ChatGPT 2x2 Suggestion Cards - Subtle color change only, no popup/scaling */}
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 w-full text-left'>
             {suggestions.map((item, i) => {
               const Icon = item.icon
@@ -96,7 +94,7 @@ function MessageList({ onSelectPrompt }) {
 
           {isLoading && (
             <div className='flex gap-3.5 items-start'>
-              <div className='w-7 h-7 rounded-full overflow-hidden border border-purple-500/30 bg-[#171717] flex items-center justify-center shrink-0 mt-0.5'>
+              <div className='w-8 h-8 rounded-full overflow-hidden border border-purple-500/30 bg-[#171717] flex items-center justify-center shrink-0 mt-0.5'>
                 <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' />
               </div>
               <LoadingAnimation />

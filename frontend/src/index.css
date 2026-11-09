@@ -10,7 +10,6 @@
   color: #ffffff;
 }
 
-/* Light purple pop-up effect on hover / click for icons and buttons */
 .icon-pop {
   transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -26,7 +25,6 @@
   box-shadow: 0 0 8px rgba(192, 132, 252, 0.7);
 }
 
-/* Fancy Purple Glowing Buttons */
 .btn-fancy-purple {
   background: linear-gradient(135deg, #9333ea 0%, #7e22ce 50%, #6366f1 100%);
   color: #ffffff;

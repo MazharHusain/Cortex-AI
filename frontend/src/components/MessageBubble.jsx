@@ -1,4 +1,4 @@
-import { Check, Copy, ExternalLink, Sparkles, X } from 'lucide-react'
+import { Check, Copy, ExternalLink, X } from 'lucide-react'
 import React, { useState } from 'react'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -27,7 +27,6 @@ function MessageBubble({ role, content, images }) {
     }, 2000)
   }
 
-  // USER MESSAGE (ChatGPT style rounded bubble on right)
   if (isUser) {
     return (
       <div className='flex justify-end w-full'>
@@ -52,15 +51,12 @@ function MessageBubble({ role, content, images }) {
     )
   }
 
-  // ASSISTANT MESSAGE (ChatGPT style: Logo Avatar + Flush Clean Content)
   return (
     <div className='flex gap-3.5 w-full justify-start items-start group'>
-      {/* Indus GPT Robot Avatar */}
-      <div className='w-7 h-7 rounded-full overflow-hidden border border-purple-500/30 bg-[#171717] flex items-center justify-center shrink-0 mt-0.5 shadow-sm'>
+      <div className='w-8 h-8 rounded-full overflow-hidden border border-purple-500/30 bg-[#171717] flex items-center justify-center shrink-0 mt-0.5 shadow-sm'>
         <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' />
       </div>
 
-      {/* Content */}
       <div className='flex-1 min-w-0 text-[#ececec] text-[15px] leading-relaxed break-words space-y-2'>
         {images && images.length > 0 && (
           <div className='flex flex-wrap gap-3 my-3'>
@@ -199,7 +195,6 @@ function MessageBubble({ role, content, images }) {
           {content}
         </Markdown>
 
-        {/* Action icons row (ChatGPT copy response) */}
         <div className='flex items-center gap-2 pt-1 opacity-0 group-hover:opacity-100 transition-opacity'>
           <button
             onClick={copyMessage}
@@ -211,7 +206,6 @@ function MessageBubble({ role, content, images }) {
         </div>
       </div>
 
-      {/* Lightbox Modal */}
       {lightBox && (
         <div className='fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-6'>
           <button
