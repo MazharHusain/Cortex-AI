@@ -1,4 +1,4 @@
-import { Brain, Check, ChevronDown, Code2, Moon, PanelLeft, Plus, Sparkles, Sun } from 'lucide-react'
+import { Brain, Check, ChevronDown, Code2, Moon, PanelLeft, Sparkles, Sun } from 'lucide-react'
 import React, { useState, useRef, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addConversation, setSelectedConversation, setSelectedModel } from '../redux/conversationSlice'
@@ -78,14 +78,6 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
             <PanelLeft size={18} color={theme === 'light' ? '#000000' : '#c084fc'} />
           </button>
         )}
-
-        <button
-          onClick={handleNewChat}
-          title="New chat"
-          className='icon-pop btn-fancy-purple flex items-center justify-center w-9 h-9 rounded-xl cursor-pointer border-none lg:hidden'
-        >
-          <Plus size={18} color="#FFFFFF" />
-        </button>
 
         <div className='relative' ref={dropdownRef}>
           <div

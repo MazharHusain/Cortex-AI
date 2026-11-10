@@ -267,7 +267,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
                 <Plus size={18} color={theme === 'dark' ? '#FFFFFF' : '#000000'} />
               </button>
 
-              <div className='flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-2 px-1 flex-1 min-w-0'>
+              <div className='flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-1 px-1 flex-1 min-w-0'>
                 {agents.map((agent) => {
                   const isActive = selectedAgent === agent.label
                   const Icon = agent.icon
@@ -276,7 +276,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
                       key={agent.id}
                       type="button"
                       onClick={() => setSelectedAgent(agent.label)}
-                      className={`icon-pop flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium cursor-pointer border shrink-0 ${
+                      className={`icon-pop flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-medium cursor-pointer border shrink-0 ${
                         isActive
                           ? "bg-purple-600/30 border-purple-400/60 shadow-[0_0_12px_rgba(168,85,247,0.35)]"
                           : "bg-purple-500/5 border-purple-500/15 hover:bg-purple-600/15 hover:border-purple-400/40"
