@@ -30,13 +30,17 @@ const guestChatGate = async (req, res, next) => {
             guestId = crypto.randomUUID()
             isNew = true
         }
-        const key = `guest-chats-${guestId}`
-        const count = await redis.incr(key)
-        if (count === 1) {
-            await redis.expire(key, GUEST_TTL)
+        let count = 1
+        try {
+            count = await redis.incr(`guest-chats-${guestId}`)
+            if (count === 1) {
+                await redis.expire(`guest-chats-${guestId}`, GUEST_TTL)
+            }
+        } catch (err) {
+            count = 1
         }
         if (count > GUEST_LIMIT) {
-            await redis.decr(key)
+            try { await redis.decr(`guest-chats-${guestId}`) } catch (_) {}
             return res.status(401).json({
                 message: "Please sign up or log in to continue chatting.",
                 code: "GUEST_LIMIT"
