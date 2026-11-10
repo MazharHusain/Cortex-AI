@@ -316,6 +316,9 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
         <p className='text-[11.5px] text-center mt-2 select-none' style={{ color: 'var(--text-muted)' }}>
           Indus GPT can make mistakes. Verify important info.
         </p>
+        <p className='text-[11px] text-center mt-1 select-none font-medium' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>
+          © Developed by Mazhar Husain
+        </p>
       </div>
     </div>
   )

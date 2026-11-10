@@ -17,25 +17,29 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
   const models = [
     {
       id: "4o",
-      name: "4o",
-      desc: "",
+      name: "Fast",
+      tag: "Fast",
+      desc: "Fast & Efficient tasks",
       icon: Sparkles
     },
     {
       id: "coding",
-      name: "Coder",
-      desc: "Coding, complex problems & deep thinking",
+      name: "Codex",
+      tag: "Coding",
+      desc: "Coding",
       icon: Code2
     },
     {
       id: "reasoning",
-      name: "Reason",
+      name: "Opus",
+      tag: "Reasoning",
       desc: "Deep thinking for complex logic & math",
       icon: Brain
     }
   ]
 
   const activeModel = models.find(m => m.id === selectedModel) || models[0]
+  const ActiveIcon = activeModel.icon
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -93,6 +97,7 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
               boxShadow: '0 0 10px rgba(168,85,247,0.15)'
             }}
           >
+            <ActiveIcon size={15} color="#c084fc" className='shrink-0' />
             <span className='text-[15px] font-bold tracking-tight' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>
               {activeModel.name}
             </span>
@@ -128,10 +133,10 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
                       className='w-full flex items-center justify-between p-2.5 rounded-xl text-left cursor-pointer transition border'
                       style={{
                         backgroundColor: isSelected
-                          ? (theme === 'light' ? 'rgba(168,85,247,0.12)' : 'rgba(168,85,247,0.2)')
+                          ? (theme === 'light' ? 'rgba(168,85,247,0.18)' : 'rgba(168,85,247,0.25)')
                           : 'transparent',
                         borderColor: isSelected
-                          ? (theme === 'light' ? 'rgba(168,85,247,0.3)' : 'rgba(168,85,247,0.4)')
+                          ? (theme === 'light' ? 'rgba(168,85,247,0.4)' : 'rgba(168,85,247,0.5)')
                           : 'transparent'
                       }}
                       onMouseEnter={e => {
@@ -157,7 +162,12 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
                         </div>
                         <div>
                           <div className='flex items-center gap-1.5'>
-                            <span className='text-[13.5px] font-semibold' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>
+                            <span
+                              className='text-[13.5px] font-semibold'
+                              style={{
+                                color: isSelected ? '#FFFFFF' : (theme === 'light' ? '#000000' : '#FFFFFF')
+                              }}
+                            >
                               {m.name}
                             </span>
                             <span
@@ -168,7 +178,7 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
                                 borderColor: 'rgba(168,85,247,0.35)'
                               }}
                             >
-                              {m.name}
+                              {m.tag}
                             </span>
                           </div>
                           {m.desc ? (
