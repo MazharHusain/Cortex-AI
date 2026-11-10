@@ -19,6 +19,10 @@ function SideBar({ onLoginClick, collapsed, setCollapsed, mobileOpen, setMobileO
     const { theme } = useTheme()
 
     useEffect(() => {
+        setImageError(false)
+    }, [userData?.avatar])
+
+    useEffect(() => {
         const getConv = async () => {
             const data = await getConversations()
             dispatch(setConversations(data || []))

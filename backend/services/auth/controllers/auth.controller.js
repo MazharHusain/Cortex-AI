@@ -7,8 +7,9 @@ import crypto from "crypto"
 
 export const login = async (req, res) => {
     try {
-        const { token } = req.body
+        const { token, avatar } = req.body
         const decoded = await getAuth(app).verifyIdToken(token)
+        const profileAvatar = decoded.picture || avatar || ""
         let user = null
 
         try {
@@ -21,8 +22,11 @@ export const login = async (req, res) => {
                     firebaseUid: decoded.uid,
                     name: decoded.name || "User",
                     email: decoded.email || "",
-                    avatar: decoded.picture || ""
+                    avatar: profileAvatar
                 })
+            } else if (profileAvatar && user.avatar !== profileAvatar) {
+                user.avatar = profileAvatar
+                await user.save()
             }
         } catch (dbError) {
             console.error("MongoDB login fallback (DB offline):", dbError.message)
@@ -34,7 +38,7 @@ export const login = async (req, res) => {
                 firebaseUid: decoded.uid,
                 name: decoded.name || "User",
                 email: decoded.email || "",
-                avatar: decoded.picture || "",
+                avatar: profileAvatar,
                 plan: "free",
                 credits: 100,
                 totalCredits: 100,
@@ -50,7 +54,7 @@ export const login = async (req, res) => {
             userId: user._id,
             name: user.name,
             email: user.email,
-            avatar: user.avatar,
+            avatar: user.avatar || profileAvatar,
             plan: user.plan || "free",
             credits: user.credits ?? 100,
             totalCredits: user.totalCredits ?? 100,
@@ -60,10 +64,11 @@ export const login = async (req, res) => {
 
 
 
+        const isProd = process.env.NODE_ENV === "production"
         res.cookie("session", sessionId, {
             httpOnly: true,
-            secure: true,
-            sameSite: "none",
+            secure: isProd,
+            sameSite: isProd ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
@@ -81,10 +86,11 @@ export const logOut = async (req, res) => {
         const sessionId = req.cookies?.session
         await redis.del(`session-${sessionId}`)
 
+        const isProd = process.env.NODE_ENV === "production"
         res.clearCookie("session", {
             httpOnly: true,
-            secure: true,
-            sameSite: "none"
+            secure: isProd,
+            sameSite: isProd ? "none" : "lax"
         })
         return res.status(200).json({ message: "logout successfully" })
     } catch (error) {

@@ -22,10 +22,15 @@ function Home() {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
 
-    const handleLogin = async (token) => {
+    const handleLogin = async (token, profile = {}) => {
         try {
-            const { data } = await api.post("/api/auth/login", { token })
-            dispatch(setUserdata(data))
+            const { data } = await api.post("/api/auth/login", { token, avatar: profile.avatar })
+            dispatch(setUserdata({
+                ...data,
+                name: data.name || profile.name || "User",
+                email: data.email || profile.email || "",
+                avatar: data.avatar || profile.avatar || ""
+            }))
             setShowLoginModal(false)
         } catch (error) {
             const msg = error.response?.data?.message || error.message || 'Login failed. Please try again.'
@@ -39,7 +44,11 @@ function Home() {
             setLoginError('')
             const result = await signInWithPopup(auth, googleProvider)
             const token = await result.user.getIdToken()
-            await handleLogin(token)
+            await handleLogin(token, {
+                name: result.user.displayName,
+                email: result.user.email,
+                avatar: result.user.photoURL
+            })
         } catch (error) {
             if (error.code === 'auth/popup-blocked') {
                 setLoginError('Popup blocked. Please allow popups for this site.')

@@ -1,6 +1,12 @@
 import express from "express"
 import dotenv from "dotenv"
+import path from "path"
+import { fileURLToPath } from "url"
 import proxy from "express-http-proxy"
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+dotenv.config({ path: path.resolve(__dirname, ".env") })
+dotenv.config({ path: path.resolve(__dirname, "../../.env") })
 dotenv.config()
 import cors from "cors"
 import cookieParser from "cookie-parser"
@@ -11,12 +17,16 @@ import { proxyWithHeader } from "./utils/proxyWithHeader.js"
 import morgan from "morgan"
 import billingRouter from "./billing/routes/billing.route.js"
 import { guestChatGate, optionalAuth } from "./middleware/guest.middleware.js"
-const port =process.env.PORT
+const port = process.env.PORT || 8000
 
 const app=express()
 
 const connectDb = async () => {
-    const uri = process.env.MONGODB_URI || "mongodb+srv://mazharhusain9919_db_user:PvsR6yBRNjVkhBuN@cluster0.oh5fwgd.mongodb.net/billing"
+    const uri = process.env.MONGODB_URI
+    if (!uri) {
+        console.warn("gateway payment database is not configured")
+        return
+    }
     try {
         await mongoose.connect(uri)
         console.log("gateway db connected")

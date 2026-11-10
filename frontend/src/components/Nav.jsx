@@ -12,7 +12,12 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
   const dispatch = useDispatch()
   const { theme, toggleTheme } = useTheme()
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false)
+  const [avatarError, setAvatarError] = useState(false)
   const dropdownRef = useRef(null)
+
+  useEffect(() => {
+    setAvatarError(false)
+  }, [userData?.avatar])
 
   const models = [
     {
@@ -239,8 +244,8 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
               title={userData.name || "User"}
               className='icon-pop w-9 h-9 rounded-full overflow-hidden bg-gradient-to-tr from-purple-600 to-indigo-600 border border-purple-400/40 flex items-center justify-center cursor-pointer shadow-[0_0_14px_rgba(168,85,247,0.35)]'
             >
-              {userData.avatar ? (
-                <img src={userData.avatar} alt={userData.name} className='w-full h-full object-cover' />
+              {userData.avatar && !avatarError ? (
+                <img src={userData.avatar} alt={userData.name} className='w-full h-full object-cover' onError={() => setAvatarError(true)} />
               ) : (
                 <span className='text-xs font-semibold text-white'>
                   {userData.name ? userData.name[0].toUpperCase() : "U"}
