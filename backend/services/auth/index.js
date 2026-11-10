@@ -4,7 +4,7 @@ import express from "express"
 import connectDb from "./config/db.js"
 import router from "./routes/auth.route.js"
 
-const port =process.env.PORT
+const port = process.env.PORT || 8001
 
 const app=express()
 app.use(express.json())

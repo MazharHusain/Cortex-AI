@@ -1,6 +1,6 @@
 const target = process.env.SERVICE_NAME || process.env.RAILWAY_SERVICE_NAME || 'gateway';
 
-console.log(Starting service: );
+console.log(`Starting service: ${target}`);
 
 switch (target) {
   case 'auth-service':

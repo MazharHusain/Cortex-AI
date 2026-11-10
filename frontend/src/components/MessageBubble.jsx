@@ -131,23 +131,31 @@ function MessageBubble({ role, content, images, sources }) {
 
   return (
     <div className='flex gap-3.5 w-full justify-start items-start group'>
-      <div className='w-8 h-8 flex items-center justify-center shrink-0 mt-0.5 bg-transparent border-none shadow-none' style={{ background: 'transparent' }}>
+      <div className='w-11 h-11 flex items-center justify-center shrink-0 mt-0.5 bg-transparent border-none shadow-none' style={{ background: 'transparent' }}>
         <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' style={{ background: 'transparent' }} />
       </div>
 
       <div className='flex-1 min-w-0 text-[15px] leading-relaxed break-words space-y-2' style={{ color: 'var(--text-main)' }}>
         {images && images.length > 0 && (
-          <div className='flex flex-wrap gap-3 my-3'>
+          <div className='flex flex-wrap gap-2.5 my-3 items-start'>
             {images.map((img, i) => (
-              <img
+              <div
                 key={i}
-                src={img}
+                className="relative overflow-hidden rounded-xl border border-purple-400/25 shadow-sm bg-black/10 dark:bg-black/30 cursor-zoom-in hover:opacity-95 hover:border-purple-400/50 transition group/img max-w-[200px]"
                 onClick={() => setLightBox(img)}
-                loading="lazy"
-                alt="AI Generated"
-                onError={(e) => e.currentTarget.remove()}
-                className="w-48 h-32 rounded-xl object-cover border border-purple-400/20 cursor-zoom-in hover:opacity-95 transition shadow-md"
-              />
+              >
+                <img
+                  src={img}
+                  loading="lazy"
+                  alt="Search result"
+                  onError={(e) => {
+                    if (e.currentTarget.parentElement) {
+                      e.currentTarget.parentElement.style.display = 'none'
+                    }
+                  }}
+                  className="max-h-36 max-w-full w-auto h-auto object-contain rounded-xl block mx-auto"
+                />
+              </div>
             ))}
           </div>
         )}
@@ -295,14 +303,20 @@ function MessageBubble({ role, content, images, sources }) {
             img: ({ src }) => {
               if (!src) return null
               return (
-                <img
-                  src={src}
-                  onClick={() => setLightBox(src)}
-                  loading="lazy"
-                  alt="Embedded"
-                  onError={(e) => e.currentTarget.remove()}
-                  className="w-48 h-32 rounded-xl object-cover border border-purple-400/20 cursor-zoom-in hover:opacity-90 transition my-2"
-                />
+                <div className="my-2 overflow-hidden rounded-xl border border-purple-400/20 max-w-[200px] bg-black/10 dark:bg-black/30">
+                  <img
+                    src={src}
+                    onClick={() => setLightBox(src)}
+                    loading="lazy"
+                    alt="Embedded"
+                    onError={(e) => {
+                      if (e.currentTarget.parentElement) {
+                        e.currentTarget.parentElement.style.display = 'none'
+                      }
+                    }}
+                    className="max-h-36 max-w-full w-auto h-auto object-contain rounded-xl cursor-zoom-in hover:opacity-90 transition block mx-auto"
+                  />
+                </div>
               )
             }
           }}

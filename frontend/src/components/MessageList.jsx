@@ -9,16 +9,33 @@ function MessageList({ onSelectPrompt }) {
   const { selectedConversation } = useSelector(state => state.conversation)
   const { messages, isLoading } = useSelector(state => state.message)
   const bottomRef = useRef(null)
+  const containerRef = useRef(null)
+  const lastQuestionRef = useRef(null)
+  const prevLoadingRef = useRef(isLoading)
   const { theme } = useTheme()
 
   useEffect(() => {
-    requestAnimationFrame(() => {
-      bottomRef?.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "end"
+    // Check if loading just finished (isLoading was true and is now false)
+    if (prevLoadingRef.current && !isLoading) {
+      if (lastQuestionRef.current) {
+        requestAnimationFrame(() => {
+          lastQuestionRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          })
+        })
+      }
+    } else if (isLoading && !prevLoadingRef.current) {
+      // Just started loading - scroll to question so user sees it
+      requestAnimationFrame(() => {
+        lastQuestionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        })
       })
-    })
-  }, [messages?.length, isLoading])
+    }
+    prevLoadingRef.current = isLoading
+  }, [isLoading])
 
   const suggestions = [
     {
@@ -48,8 +65,8 @@ function MessageList({ onSelectPrompt }) {
   ]
 
   return (
-    <div className='flex-1 overflow-y-auto px-3 sm:px-4 md:px-6 py-2 sm:py-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors' style={{ backgroundColor: 'var(--bg-main)' }}>
-      {messages.length === 0 || !selectedConversation ? (
+    <div ref={containerRef} className='flex-1 overflow-y-auto px-3 sm:px-4 md:px-6 py-2 sm:py-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors' style={{ backgroundColor: 'var(--bg-main)' }}>
+      {messages.length === 0 ? (
         <div className="min-h-full flex flex-col items-center justify-start sm:justify-center max-w-2xl mx-auto px-3 sm:px-4 text-center pt-2 sm:pt-0 pb-4">
           <div className='relative mb-2 sm:mb-4 flex flex-col items-center'>
             <div className='w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center bg-transparent border-none shadow-none' style={{ background: 'transparent' }}>
@@ -98,19 +115,23 @@ function MessageList({ onSelectPrompt }) {
         </div>
       ) : (
         <div className='max-w-3xl w-full mx-auto space-y-6'>
-          {messages.map((msg, i) => (
-            <MessageBubble
-              key={i}
-              role={msg?.role}
-              content={msg?.content}
-              images={msg?.images || []}
-              sources={msg?.sources || []}
-            />
-          ))}
+          {messages.map((msg, i) => {
+            const isLastUserMsg = msg.role === 'user' && (i === messages.length - 1 || (i === messages.length - 2 && messages[i + 1]?.role === 'assistant'))
+            return (
+              <div key={i} ref={isLastUserMsg ? lastQuestionRef : null} className="w-full">
+                <MessageBubble
+                  role={msg?.role}
+                  content={msg?.content}
+                  images={msg?.images || []}
+                  sources={msg?.sources || []}
+                />
+              </div>
+            )
+          })}
 
           {isLoading && (
             <div className='flex gap-3.5 items-start'>
-              <div className='w-8 h-8 flex items-center justify-center shrink-0 mt-0.5 bg-transparent border-none shadow-none' style={{ background: 'transparent' }}>
+              <div className='w-11 h-11 flex items-center justify-center shrink-0 mt-0.5 bg-transparent border-none shadow-none' style={{ background: 'transparent' }}>
                 <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' style={{ background: 'transparent' }} />
               </div>
               <LoadingAnimation />

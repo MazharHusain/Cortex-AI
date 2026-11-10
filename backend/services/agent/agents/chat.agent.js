@@ -105,10 +105,10 @@ CONTENT & FORMATTING:
       sources
     }
   } catch (error) {
-    console.log(error)
+    console.error("chat model request failed:", error?.message || error)
     return {
       ...state,
-      aiResponse: error?.data?.message || "failed to generate chat"
+      aiResponse: error?.data?.message || `I couldn't get a response from the AI service: ${error?.message || "please check the AI provider configuration and try again."}`
     }
   }
 }

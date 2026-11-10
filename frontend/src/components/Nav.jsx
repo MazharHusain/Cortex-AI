@@ -89,12 +89,12 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
             onClick={() => setModelDropdownOpen(prev => !prev)}
             className='icon-pop flex items-center gap-2 px-3 py-1.5 rounded-2xl border cursor-pointer group'
             style={{
-              backgroundColor: theme === 'light' ? 'rgba(168,85,247,0.06)' : 'rgba(168,85,247,0.08)',
-              borderColor: theme === 'light' ? 'rgba(168,85,247,0.35)' : 'rgba(168,85,247,0.3)',
-              boxShadow: '0 0 10px rgba(168,85,247,0.15)'
+              backgroundColor: theme === 'light' ? 'rgba(0,0,0,0.04)' : 'rgba(168,85,247,0.08)',
+              borderColor: theme === 'light' ? 'rgba(0,0,0,0.12)' : 'rgba(168,85,247,0.3)',
+              boxShadow: theme === 'light' ? '0 1px 4px rgba(0,0,0,0.05)' : '0 0 10px rgba(168,85,247,0.15)'
             }}
           >
-            <ActiveIcon size={15} color="#c084fc" className='shrink-0' />
+            <ActiveIcon size={15} color={theme === 'light' ? "#000000" : "#c084fc"} className='shrink-0' />
             <span className='text-[15px] font-bold tracking-tight' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>
               {activeModel.name}
             </span>
@@ -151,11 +151,13 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
                         <div
                           className='w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5'
                           style={{
-                            backgroundColor: isSelected ? 'rgba(168,85,247,0.25)' : (theme === 'light' ? '#f1f5f9' : 'rgba(255,255,255,0.08)'),
-                            color: '#c084fc'
+                            backgroundColor: isSelected
+                              ? (theme === 'light' ? 'rgba(0,0,0,0.08)' : 'rgba(168,85,247,0.25)')
+                              : (theme === 'light' ? '#f1f5f9' : 'rgba(255,255,255,0.08)'),
+                            color: theme === 'light' ? '#000000' : '#c084fc'
                           }}
                         >
-                          <Icon size={15} color="#c084fc" />
+                          <Icon size={15} color={theme === 'light' ? '#000000' : '#c084fc'} />
                         </div>
                         <div>
                           <div className='flex items-center gap-1.5'>
@@ -170,9 +172,9 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
                             <span
                               className='text-[10px] px-1.5 py-0.2 rounded font-medium border'
                               style={{
-                                color: theme === 'light' ? '#581c87' : '#d8b4fe',
-                                backgroundColor: 'rgba(168,85,247,0.15)',
-                                borderColor: 'rgba(168,85,247,0.35)'
+                                color: theme === 'light' ? '#000000' : '#d8b4fe',
+                                backgroundColor: theme === 'light' ? 'rgba(0,0,0,0.06)' : 'rgba(168,85,247,0.15)',
+                                borderColor: theme === 'light' ? 'rgba(0,0,0,0.15)' : 'rgba(168,85,247,0.35)'
                               }}
                             >
                               {m.tag}
@@ -186,7 +188,7 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
                         </div>
                       </div>
                       {isSelected && (
-                        <Check size={16} className='text-purple-400 shrink-0 ml-2' />
+                        <Check size={16} className={theme === 'light' ? 'text-black shrink-0 ml-2' : 'text-purple-400 shrink-0 ml-2'} />
                       )}
                     </button>
                   )

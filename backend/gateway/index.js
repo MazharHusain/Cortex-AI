@@ -28,7 +28,7 @@ const connectDb = async () => {
         return
     }
     try {
-        await mongoose.connect(uri)
+        await mongoose.connect(uri, { serverSelectionTimeoutMS: 4000 })
         console.log("gateway db connected")
     } catch (error) {
         console.warn(`gateway db warning: ${error.message}`)

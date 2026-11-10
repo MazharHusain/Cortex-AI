@@ -1,8 +1,13 @@
 import express from "express"
 import dotenv from "dotenv"
+import path from "path"
+import { fileURLToPath } from "url"
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+dotenv.config({ path: path.resolve(__dirname, ".env") })
+dotenv.config()
 import connectDb from "./config/db.js"
 import router from "./routes/agent.route.js"
-dotenv.config()
 
 const port = process.env.PORT || 8003
 

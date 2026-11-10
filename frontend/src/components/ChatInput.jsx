@@ -104,84 +104,103 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
     const trimmedVal = value.trim()
     if (!trimmedVal || isLoading) return
 
-    dispatch(setIsLoading(true))
-    let conversation = selectedConversation
-    if (userData && !conversation) {
-      dispatch(setMessages([]))
-      const conv = await createConversation()
-      if (conv && conv._id) {
-        dispatch(setSelectedConversation(conv))
-        dispatch(addConversation(conv))
-        conversation = conv
-      }
-    }
-
-    if (userData && conversation?.title === "New Chat") {
-      updateConversation({ id: conversation?._id, title: trimmedVal }).catch(() => {})
-      dispatch(setConvTitle({ conversationId: conversation?._id, title: trimmedVal.slice(0, 40) }))
-    }
-
-    const formData = new FormData()
-    formData.append("prompt", trimmedVal)
-    if (conversation?._id) {
-      formData.append("conversationId", conversation._id)
-    }
-
-    let effectiveAgent = selectedAgent.toLowerCase()
-    const isSearchQuery = /who is|what is|kon hai|kya hai|latest|news|weather|price|ceo|founder|history|biography|when was|where is|tell me about|search/i.test(trimmedVal)
-
-    if (selectedFile) {
-      effectiveAgent = "auto"
-    } else if (effectiveAgent === "search" || isSearchQuery) {
-      effectiveAgent = "search"
-    } else if (effectiveAgent === "auto") {
-      if (selectedModel === "coding") {
-        effectiveAgent = "coding"
-      } else if (selectedModel === "reasoning") {
-        effectiveAgent = "search"
-      } else {
-        effectiveAgent = "chat"
-      }
-    }
-    formData.append("agent", effectiveAgent)
-    if (selectedFile) {
-      formData.append("file", selectedFile)
-    }
-
-    dispatch(addMessage({ role: "user", content: trimmedVal }))
+    const promptText = trimmedVal
+    const attachedFile = selectedFile
     setValue("")
     setSelectedFile(null)
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto"
     }
 
-    const data = await sendMessage(formData)
-    dispatch(setIsLoading(false))
-    if (data?.code === "GUEST_LIMIT") {
-      localStorage.setItem("indus_guest_chats", "10")
+    dispatch(addMessage({ role: "user", content: promptText }))
+    dispatch(setIsLoading(true))
+
+    try {
+      let conversation = selectedConversation
+      if (userData && !conversation) {
+        try {
+          const conv = await Promise.race([
+            createConversation(),
+            new Promise(res => setTimeout(() => res(null), 2500))
+          ])
+          if (conv && conv._id) {
+            dispatch(setSelectedConversation(conv))
+            dispatch(addConversation(conv))
+            conversation = conv
+          }
+        } catch (_) {}
+      }
+
+      if (userData && conversation?.title === "New Chat") {
+        updateConversation({ id: conversation?._id, title: promptText }).catch(() => {})
+        dispatch(setConvTitle({ conversationId: conversation?._id, title: promptText.slice(0, 40) }))
+      }
+
+      const formData = new FormData()
+      formData.append("prompt", promptText)
+      if (conversation?._id) {
+        formData.append("conversationId", conversation._id)
+      }
+
+      let effectiveAgent = selectedAgent.toLowerCase()
+      const isSearchQuery = /who is|what is|kon hai|kya hai|latest|news|weather|price|ceo|founder|history|biography|when was|where is|tell me about|search/i.test(promptText)
+
+      if (attachedFile) {
+        effectiveAgent = "auto"
+      } else if (effectiveAgent === "search" || isSearchQuery) {
+        effectiveAgent = "search"
+      } else if (effectiveAgent === "auto") {
+        if (selectedModel === "coding") {
+          effectiveAgent = "coding"
+        } else if (selectedModel === "reasoning") {
+          effectiveAgent = "search"
+        } else {
+          effectiveAgent = "chat"
+        }
+      }
+      formData.append("agent", effectiveAgent)
+      if (attachedFile) {
+        formData.append("file", attachedFile)
+      }
+
+      const data = await sendMessage(formData)
+
+      if (data?.code === "GUEST_LIMIT") {
+        localStorage.setItem("indus_guest_chats", "10")
+        dispatch(addMessage({
+          role: "assistant",
+          content: "Please sign up or log in to continue chatting."
+        }))
+        if (onLoginClick) onLoginClick("limit")
+        return
+      }
+
+      if (!userData && data && !data.error) {
+        localStorage.setItem("indus_guest_chats", String(guestUsed + 1))
+      }
+
+      if (data && !data.error) {
+        dispatch(setArtifacts(data.artifacts || []))
+        dispatch(addMessage({
+          role: "assistant",
+          content: data.answer || "No response generated.",
+          images: data.images || [],
+          sources: data.sources || []
+        }))
+      } else {
+        dispatch(addMessage({
+          role: "assistant",
+          content: data?.answer || "Sorry, I could not connect to the agent service. Please try again."
+        }))
+      }
+    } catch (err) {
+      console.error("send message failed:", err)
       dispatch(addMessage({
         role: "assistant",
-        content: "Please sign up or log in to continue chatting."
+        content: "An unexpected error occurred. Please try again."
       }))
-      if (onLoginClick) onLoginClick("limit")
-      return
-    }
-    if (!userData && data && !data.error) {
-      localStorage.setItem("indus_guest_chats", String(guestUsed + 1))
-    }
-    if (data && !data.error) {
-      dispatch(setArtifacts(data.artifacts || []))
-      dispatch(addMessage({
-        role: "assistant",
-        content: data.answer || "No response generated.",
-        images: data.images || [],
-        sources: data.sources || []
-      }))
-    } else {
-      dispatch(addMessage({
-        role: "assistant",
-        content: "Sorry, I could not connect to the agent service. Please try again."
-      }))
+    } finally {
+      dispatch(setIsLoading(false))
     }
   }
 
@@ -238,6 +257,8 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
           )}
 
           <textarea
+            id="chat-prompt-input"
+            name="prompt"
             ref={textareaRef}
             placeholder='Ask Indus GPT'
             onChange={handleInputChange}
@@ -357,10 +378,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
           </div>
         </div>
 
-        <p className='text-[11.5px] text-center mt-2 select-none' style={{ color: 'var(--text-muted)' }}>
-          Indus GPT can make mistakes. Verify important info.
-        </p>
-        <p className='text-[11px] text-center mt-1 select-none font-medium' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>
+        <p className='text-[11px] text-center mt-2 select-none font-medium' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>
           © Developed by Mazhar Husain
         </p>
       </div>

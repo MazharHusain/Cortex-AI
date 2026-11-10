@@ -7,6 +7,7 @@ import { verifyPayment } from '../features/verifyPayment'
 import { setUserdata } from '../redux/userSlice'
 import getCurrentUser from '../features/getCurrentUser'
 import { useTheme } from '../context/ThemeContext'
+import RazorpayModal from './RazorpayModal'
 
 const loadRazorpay = () => new Promise((resolve) => {
     if (window.Razorpay) {
@@ -27,6 +28,7 @@ function BillingDrawer({ open, onClose }) {
     const [payState, setPayState] = useState("")
     const [payError, setPayError] = useState("")
     const [payMode, setPayMode] = useState("")
+    const [testOrder, setTestOrder] = useState(null)
     const isLight = theme === "light"
     const panelBg = isLight ? "#ffffff" : "#0f1117"
     const cardBg = isLight ? "#f8fafc" : "rgba(255,255,255,0.04)"
@@ -57,66 +59,45 @@ function BillingDrawer({ open, onClose }) {
         }
     }
 
+    const handleCompleteTestPayment = async () => {
+        if (!testOrder) return
+        try {
+            setPayState("verifying")
+            const response = {
+                razorpay_order_id: testOrder.order.id,
+                razorpay_payment_id: `pay_test_${Date.now()}`,
+                razorpay_signature: "test_signature"
+            }
+            const result = await verifyPayment(response)
+            await applyCredits(result)
+            setTestOrder(null)
+            setPayState("success")
+            setPayError("")
+        } catch (error) {
+            setPayState("")
+            setPayError(error.response?.data?.message || "Payment verification failed")
+        }
+    }
+
     const handleUpgrade = async (plan) => {
         try {
             setPayError("")
             setPayState("starting")
-            const ready = await loadRazorpay()
-            if (!ready) {
-                setPayError("Payment checkout could not load. Please try again.")
-                setPayState("")
-                return
-            }
             const data = await createOrder(plan)
-            const key = data?.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID
-            if (!data?.order?.id || !key) {
+            if (!data?.order?.id) {
                 setPayError("Unable to start payment. Please try again.")
                 setPayState("")
                 return
             }
             setPayMode(data.mode || "")
-            const options = {
-                key,
-                amount: data.order.amount,
-                currency: data.order.currency || "INR",
-                name: "Indus GPT",
-                description: `${data?.plan?.name || plan} Plan`,
-                order_id: data.order.id,
-                prefill: {
-                    name: userData?.name || "",
-                    email: userData?.email || ""
-                },
-                handler: async (response) => {
-                    try {
-                        setPayState("verifying")
-                        const result = await verifyPayment(response)
-                        await applyCredits(result)
-                        setPayState("success")
-                        setPayError("")
-                    } catch (error) {
-                        setPayState("")
-                        setPayError(error.response?.data?.message || "Payment verification failed")
-                    }
-                },
-                modal: {
-                    ondismiss: () => {
-                        setPayState((current) => current === "success" ? current : "")
-                    }
-                },
-                theme: {
-                    color: "#4F46E5"
-                }
-            }
-            const razorpay = new window.Razorpay(options)
-            razorpay.on("payment.failed", (response) => {
-                setPayState("")
-                setPayError(response?.error?.description || "Payment failed")
-            })
-            razorpay.open()
+            setTestOrder(data)
             setPayState("")
         } catch (error) {
             setPayState("")
-            setPayError(error.response?.data?.message || "Payment could not be started")
+            const message = error.response?.data?.message
+            setPayError(error.response?.status === 401 || message?.toLowerCase() === "unauthorized"
+                ? "Your login session expired. Please sign in again."
+                : message || "Payment could not be started")
         }
     }
 
@@ -184,9 +165,29 @@ function BillingDrawer({ open, onClose }) {
                     {payState === "success" && (
                         <p className='mx-5 mb-3 text-xs text-emerald-600 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-2'>Payment complete. Credits have been added.</p>
                     )}
-                    {payMode === "test" && (
-                        <p className='mx-5 mb-3 text-xs rounded-xl px-3 py-2' style={{ color: muted, backgroundColor: cardBg, border: `1px solid ${border}` }}>Test mode is on. Use card 4111 1111 1111 1111, any future expiry, and any CVV.</p>
-                    )}
+                    <RazorpayModal
+                        open={Boolean(testOrder)}
+                        onClose={() => setTestOrder(null)}
+                        orderData={testOrder}
+                        userData={userData}
+                        onSuccess={async (response) => {
+                            try {
+                                setPayState("verifying")
+                                const result = await verifyPayment(response)
+                                await applyCredits(result)
+                                setTestOrder(null)
+                                setPayState("success")
+                                setPayError("")
+                            } catch (error) {
+                                setPayState("")
+                                setPayError(error.response?.data?.message || "Payment verification failed")
+                            }
+                        }}
+                        onError={(err) => {
+                            setPayState("")
+                            setPayError(err.message || "Payment failed")
+                        }}
+                    />
                     <div className='px-5 flex-1 overflow-auto space-y-4 pb-5'>
                         <div className='rounded-xl border p-4' style={{ backgroundColor: cardBg, borderColor: border }}>
                             <h3 className='font-semibold' style={{ color: heading }}>Starter Plan</h3>

@@ -177,31 +177,47 @@ export const deductCredits = async (req, res) => {
 
         };
 
-        const user=await User.findById(userId)
-
-        if(!user){
-            return res.status(400).json({message:"user not found"})
+        const requiredCredits = COST[agent] || 1
+        let user = null
+        if (isObjectId(userId)) {
+            user = await User.findById(userId)
         }
 
-       const requiredCredits=COST[agent] || 1
-        if(user.credits<requiredCredits){
-         return res.status(400).json({message:"Not enough credits."})
-        }
-        user.credits-=requiredCredits
-        await user.save()
+        if (user) {
+            if (user.credits < requiredCredits) {
+                return res.status(400).json({ message: "Not enough credits." })
+            }
+            user.credits -= requiredCredits
+            await user.save()
 
-       const sessionId = await redis.get(`user-session-${user?._id}`)
-        console.log("sessionId", sessionId)
-        await redis.set(`session-${sessionId}`, JSON.stringify({
-            userId: user._id,
-            name: user.name,
-            email: user.email,
-            avatar: user.avatar,
-            plan: user.plan,
-            credits: user.credits,
-            totalCredits: user.totalCredits,
-            planExpiresAt: user.planExpiresAt
-        }), "EX", 7 * 24 * 60 * 60)
+            const sessionId = await redis.get(`user-session-${user?._id}`)
+            if (sessionId) {
+                await redis.set(`session-${sessionId}`, JSON.stringify({
+                    userId: user._id,
+                    name: user.name,
+                    email: user.email,
+                    avatar: user.avatar,
+                    plan: user.plan,
+                    credits: user.credits,
+                    totalCredits: user.totalCredits,
+                    planExpiresAt: user.planExpiresAt
+                }), "EX", 7 * 24 * 60 * 60)
+            }
+            return res.status(200).json({ success: true, credits: user.credits })
+        }
+
+        const sessionId = await redis.get(`user-session-${userId}`)
+        if (sessionId) {
+            const raw = await redis.get(`session-${sessionId}`)
+            if (raw) {
+                const sess = JSON.parse(raw)
+                sess.credits = Math.max(0, (sess.credits ?? 100) - requiredCredits)
+                await redis.set(`session-${sessionId}`, JSON.stringify(sess), "EX", 7 * 24 * 60 * 60)
+                return res.status(200).json({ success: true, credits: sess.credits })
+            }
+        }
+
+        return res.status(200).json({ success: true, credits: 100 })
 
         return res.status(200).json({ success: true ,credits:user.credits})
     } catch (error) {

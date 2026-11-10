@@ -12,15 +12,32 @@ function ChatArea({ onLoginClick, onToggleSidebar }) {
   const dispatch = useDispatch()
   const [initialPrompt, setInitialPrompt] = useState("")
   const [showBilling, setShowBilling] = useState(false)
+  const activeConvIdRef = React.useRef(null)
 
   useEffect(() => {
     const getMesg = async () => {
-      if (selectedConversation) {
-        if (selectedConversation.title === "New Chat") return
-        const data = await getMessages(selectedConversation?._id)
-        dispatch(setMessages(data || []))
-        const latestArtifactMessage = [...(data || [])].reverse().find(msg => msg.artifacts && msg.artifacts.length > 0)
-        dispatch(setArtifacts(latestArtifactMessage?.artifacts || []))
+      if (!selectedConversation?._id) {
+        activeConvIdRef.current = null
+        return
+      }
+
+      // If user is continuing to chat in the same active conversation, don't re-fetch and wipe ongoing messages
+      if (activeConvIdRef.current === selectedConversation._id) {
+        return
+      }
+      activeConvIdRef.current = selectedConversation._id
+
+      if (selectedConversation.title === "New Chat") return
+
+      try {
+        const data = await getMessages(selectedConversation._id)
+        if (Array.isArray(data) && data.length > 0) {
+          dispatch(setMessages(data))
+          const latestArtifactMessage = [...data].reverse().find(msg => msg.artifacts && msg.artifacts.length > 0)
+          dispatch(setArtifacts(latestArtifactMessage?.artifacts || []))
+        }
+      } catch (err) {
+        console.error("fetch messages error:", err)
       }
     }
     getMesg()
