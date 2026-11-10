@@ -55,7 +55,7 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
             borderColor: theme === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(168,85,247,0.2)'
           }}
         >
-          <img src="/logo.png" alt="Indus GPT" className='w-8 h-8 rounded-lg object-contain' />
+          <img src="/logo.png" alt="Indus GPT" className='w-10 h-10 object-contain shrink-0 bg-transparent' style={{ background: 'transparent' }} />
           <span className='text-[16px] font-bold tracking-tight' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>Indus GPT</span>
           <span
             className='text-[11px] px-1.5 py-0.2 rounded-md ml-0.5'

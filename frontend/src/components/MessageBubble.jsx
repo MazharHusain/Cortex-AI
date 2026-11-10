@@ -33,9 +33,9 @@ function MessageBubble({ role, content, images }) {
         <div
           className='max-w-[85%] md:max-w-[70%] border px-5 py-3 rounded-[24px] rounded-br-md text-[15px] leading-relaxed break-words shadow-[0_0_15px_rgba(168,85,247,0.18)] transition-colors'
           style={{
-            backgroundColor: 'var(--bg-user-bubble)',
-            borderColor: 'var(--border-user-bubble)',
-            color: 'var(--text-user)'
+            backgroundColor: '#ffffff',
+            borderColor: 'rgba(168, 85, 247, 0.35)',
+            color: '#7e22ce'
           }}
         >
           {images && images.length > 0 && (
@@ -52,7 +52,17 @@ function MessageBubble({ role, content, images }) {
               ))}
             </div>
           )}
-          <p className='whitespace-pre-wrap font-medium tracking-wide' style={{ color: 'var(--text-user)' }}>{content}</p>
+          <p
+            className='whitespace-pre-wrap font-semibold tracking-wide'
+            style={{
+              background: 'linear-gradient(135deg, #7e22ce 0%, #4338ca 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              color: '#7e22ce'
+            }}
+          >
+            {content}
+          </p>
         </div>
       </div>
     )
@@ -60,8 +70,8 @@ function MessageBubble({ role, content, images }) {
 
   return (
     <div className='flex gap-3.5 w-full justify-start items-start group'>
-      <div className='w-8 h-8 rounded-full overflow-hidden border border-purple-500/30 bg-[#171717] flex items-center justify-center shrink-0 mt-0.5 shadow-sm'>
-        <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' />
+      <div className='w-8 h-8 flex items-center justify-center shrink-0 mt-0.5 bg-transparent border-none shadow-none' style={{ background: 'transparent' }}>
+        <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' style={{ background: 'transparent' }} />
       </div>
 
       <div className='flex-1 min-w-0 text-[15px] leading-relaxed break-words space-y-2' style={{ color: 'var(--text-main)' }}>

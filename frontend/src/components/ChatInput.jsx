@@ -205,7 +205,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
               theme === 'dark' ? 'placeholder:text-white' : 'placeholder:text-black'
             }`}
             style={{
-              color: theme === 'dark' ? '#FFFFFF' : '#000000'
+              color: theme === 'dark' ? '#c084fc' : '#7e22ce'
             }}
           />
 

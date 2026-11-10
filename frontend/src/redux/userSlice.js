@@ -4,7 +4,7 @@ const userSlice = createSlice({
     name: "user",
     initialState: {
         userData: null,
-        loading: true,  // true initially - wait for auth check
+        loading: true,
     },
     reducers: {
         setUserdata: (state, action) => {

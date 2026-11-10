@@ -52,15 +52,8 @@ function MessageList({ onSelectPrompt }) {
       {messages.length === 0 || !selectedConversation ? (
         <div className="h-full flex flex-col items-center justify-center max-w-2xl mx-auto px-4 text-center my-auto">
           <div className='relative mb-5 flex flex-col items-center'>
-            <div
-              className='w-20 h-20 rounded-2xl p-2.5 border shadow-2xl flex items-center justify-center transition-all'
-              style={{
-                backgroundColor: '#ffffff',
-                borderColor: theme === 'dark' ? 'rgba(192, 132, 252, 0.5)' : 'rgba(192, 132, 252, 0.3)',
-                boxShadow: theme === 'dark' ? '0 0 30px rgba(192, 132, 252, 0.45)' : '0 10px 25px rgba(0, 0, 0, 0.08)'
-              }}
-            >
-              <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' style={{ filter: 'none', opacity: 1 }} />
+            <div className='w-24 h-24 flex items-center justify-center bg-transparent border-none shadow-none' style={{ background: 'transparent' }}>
+              <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' style={{ background: 'transparent', filter: 'none' }} />
             </div>
           </div>
 
@@ -116,8 +109,8 @@ function MessageList({ onSelectPrompt }) {
 
           {isLoading && (
             <div className='flex gap-3.5 items-start'>
-              <div className='w-8 h-8 rounded-full overflow-hidden border border-purple-500/30 bg-[#171717] flex items-center justify-center shrink-0 mt-0.5'>
-                <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' />
+              <div className='w-8 h-8 flex items-center justify-center shrink-0 mt-0.5 bg-transparent border-none shadow-none' style={{ background: 'transparent' }}>
+                <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' style={{ background: 'transparent' }} />
               </div>
               <LoadingAnimation />
             </div>

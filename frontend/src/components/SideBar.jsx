@@ -46,9 +46,9 @@ function SideBar({ onLoginClick, collapsed, setCollapsed }) {
                     className='icon-pop flex items-center justify-center w-10 h-10 rounded-xl border border-transparent hover:border-purple-400/40 cursor-pointer bg-transparent'
                     onClick={() => setCollapsed(false)}
                     title="Open sidebar"
-                    style={{ color: theme === 'light' ? '#000000' : '#c084fc' }}
+                    style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}
                 >
-                    <PanelLeft size={19} color={theme === 'light' ? '#000000' : '#c084fc'} />
+                    <PanelLeft size={19} color={theme === 'light' ? '#000000' : '#FFFFFF'} />
                 </button>
 
                 <button
@@ -118,7 +118,7 @@ function SideBar({ onLoginClick, collapsed, setCollapsed }) {
             <aside className='hidden lg:flex flex-col w-[260px] h-screen border-r shrink-0 select-none z-20 transition-colors' style={{ backgroundColor: 'var(--bg-sidebar)', borderColor: 'var(--border-subtle)' }}>
                 <div className='h-14 flex items-center justify-between px-3.5 border-b' style={{ borderColor: 'var(--border-header)' }}>
                     <div className='flex items-center gap-3'>
-                        <img src="/logo.png" alt="Indus GPT" className='w-9 h-9 rounded-xl object-contain shadow-sm' />
+                        <img src="/logo.png" alt="Indus GPT" className='w-9 h-9 object-contain bg-transparent' style={{ background: 'transparent' }} />
                         <span className='font-bold text-[17px] tracking-tight' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>Indus GPT</span>
                     </div>
                     <div className='flex items-center gap-1.5'>
@@ -126,17 +126,17 @@ function SideBar({ onLoginClick, collapsed, setCollapsed }) {
                             onClick={handleCreateConversation}
                             title="New chat"
                             className='icon-pop flex items-center justify-center w-8 h-8 rounded-lg border border-transparent hover:border-purple-400/40 cursor-pointer bg-transparent'
-                            style={{ color: theme === 'light' ? '#000000' : '#c084fc' }}
+                            style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}
                         >
-                            <SquarePen size={18} color={theme === 'light' ? '#000000' : '#c084fc'} />
+                            <SquarePen size={18} color={theme === 'light' ? '#000000' : '#FFFFFF'} />
                         </button>
                         <button
                             onClick={() => setCollapsed(true)}
                             title="Close sidebar"
                             className='icon-pop flex items-center justify-center w-8 h-8 rounded-lg border border-transparent hover:border-purple-400/40 cursor-pointer bg-transparent'
-                            style={{ color: theme === 'light' ? '#000000' : '#c084fc' }}
+                            style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}
                         >
-                            <PanelLeft size={18} color={theme === 'light' ? '#000000' : '#c084fc'} />
+                            <PanelLeft size={18} color={theme === 'light' ? '#000000' : '#FFFFFF'} />
                         </button>
                     </div>
                 </div>

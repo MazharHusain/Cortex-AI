@@ -6,14 +6,14 @@
   --bg-input: #2f2f2f;
   --bg-card: #2a2a2a;
   --bg-card-hover: #343434;
-  --bg-user-bubble: #2a2236;
+  --bg-user-bubble: #ffffff;
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-header: rgba(255, 255, 255, 0.06);
   --border-user-bubble: rgba(168, 85, 247, 0.35);
   --text-main: #ececec;
   --text-heading: #ffffff;
   --text-muted: #94a3b8;
-  --text-user: #f3e8ff;
+  --text-user: #7e22ce;
 }
 
 [data-theme="light"] {
@@ -22,14 +22,14 @@
   --bg-input: #ffffff;
   --bg-card: #ffffff;
   --bg-card-hover: #f3f4f6;
-  --bg-user-bubble: #f3e8ff;
+  --bg-user-bubble: #ffffff;
   --border-subtle: rgba(0, 0, 0, 0.08);
   --border-header: rgba(0, 0, 0, 0.06);
-  --border-user-bubble: rgba(168, 85, 247, 0.45);
+  --border-user-bubble: rgba(168, 85, 247, 0.35);
   --text-main: #1f2937;
   --text-heading: #000000;
   --text-muted: #475569;
-  --text-user: #581c87;
+  --text-user: #7e22ce;
 }
 
 [data-theme="light"] textarea::placeholder {
