@@ -1,15 +1,18 @@
-import { Check, Copy, ExternalLink, X } from 'lucide-react'
-import React, { useState } from 'react'
+import { Check, ChevronDown, ChevronUp, Copy, ExternalLink, Globe, X } from 'lucide-react'
+import React, { useMemo, useState } from 'react'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { useTheme } from '../context/ThemeContext'
 
 function MessageBubble({ role, content, images, sources }) {
   const isUser = role === "user"
   const [lightBox, setLightBox] = useState(null)
   const [copiedCode, setCopiedCode] = useState("")
   const [copiedMessage, setCopiedMessage] = useState(false)
+  const [isSourcesExpanded, setIsSourcesExpanded] = useState(false)
+  const { theme } = useTheme()
 
   const copyCode = async (code) => {
     await navigator.clipboard.writeText(code)
@@ -26,6 +29,70 @@ function MessageBubble({ role, content, images, sources }) {
       setCopiedMessage(false)
     }, 2000)
   }
+
+  const normalizedSources = useMemo(() => {
+    if (!sources || !Array.isArray(sources) || sources.length === 0) return []
+    return sources.map((s, idx) => {
+      if (typeof s === "string") {
+        let domain = ""
+        try {
+          domain = new URL(s).hostname.replace(/^www\./, '')
+        } catch (e) {
+          domain = "source"
+        }
+        return {
+          id: idx + 1,
+          title: domain,
+          url: s,
+          domain,
+          siteName: domain.split('.')[0] ? (domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1)) : "Source",
+          favicon: `https://www.google.com/s2/favicons?domain=${domain}&sz=32`,
+          snippet: ""
+        }
+      }
+      let domain = s.domain
+      if (!domain && s.url) {
+        try {
+          domain = new URL(s.url).hostname.replace(/^www\./, '')
+        } catch (e) {
+          domain = "source"
+        }
+      }
+      return {
+        id: s.id || idx + 1,
+        title: s.title || domain || "Source",
+        url: s.url,
+        domain: domain || "source",
+        siteName: s.siteName || (domain ? (domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1)) : "Source"),
+        favicon: s.favicon || `https://www.google.com/s2/favicons?domain=${domain}&sz=32`,
+        snippet: s.snippet || ""
+      }
+    }).filter(s => s.url)
+  }, [sources])
+
+  const cleanContent = useMemo(() => {
+    if (!content) return ""
+    return content
+      .replace(/##\s*Optimized Code\s*(\(if needed\))?[\s\S]*?(?=(##|$))/gi, "")
+      .replace(/###\s*Optimized Code\s*(\(if needed\))?[\s\S]*?(?=(###|##|$))/gi, "")
+      .replace(/\*\*Optimized Code[\s\S]*?(?=(\*\*|$))/gi, "")
+      .trim()
+  }, [content])
+
+  const processedContent = useMemo(() => {
+    let text = cleanContent
+    if (normalizedSources.length > 0) {
+      text = text.replace(/\[(\d+)\]/g, (match, numStr) => {
+        const idx = parseInt(numStr, 10)
+        const src = normalizedSources.find(s => s.id === idx) || normalizedSources[idx - 1]
+        if (src && src.url) {
+          return `[cite:${idx}](${src.url})`
+        }
+        return match
+      })
+    }
+    return text
+  }, [cleanContent, normalizedSources])
 
   if (isUser) {
     return (
@@ -124,17 +191,54 @@ function MessageBubble({ role, content, images, sources }) {
                 {children}
               </td>
             ),
-            a: ({ href, children }) => (
-              <a
-                href={href}
-                target="_blank"
-                rel="noreferrer"
-                className="text-purple-400 hover:text-purple-300 underline inline-flex items-center gap-1 transition"
-              >
-                {children}
-                <ExternalLink size={13} />
-              </a>
-            ),
+            a: ({ href, children }) => {
+              const rawChildren = Array.isArray(children) ? children.join("") : String(children || "")
+              if (rawChildren.startsWith("cite:")) {
+                const citeId = parseInt(rawChildren.replace("cite:", ""), 10)
+                const citeSource = normalizedSources.find(s => s.id === citeId) || normalizedSources[citeId - 1]
+                const citeDomain = citeSource?.domain || "source"
+                const citeFavicon = citeSource?.favicon || `https://www.google.com/s2/favicons?domain=${citeDomain}&sz=32`
+                const citeName = citeSource?.siteName || citeDomain
+
+                return (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={citeSource?.title || citeDomain}
+                    className="inline-flex items-center gap-1 mx-0.5 px-1.5 py-0.5 rounded-full text-[11px] font-medium align-baseline transition-all duration-150 no-underline hover:scale-105 select-none"
+                    style={{
+                      backgroundColor: theme === 'dark' ? 'rgba(168, 85, 247, 0.18)' : 'rgba(147, 51, 234, 0.1)',
+                      borderColor: theme === 'dark' ? 'rgba(168, 85, 247, 0.4)' : 'rgba(147, 51, 234, 0.28)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      color: theme === 'dark' ? '#f3e8ff' : '#6b21a8'
+                    }}
+                  >
+                    <img
+                      src={citeFavicon}
+                      alt=""
+                      className="w-3 h-3 rounded-full object-contain shrink-0"
+                      onError={(e) => { e.currentTarget.style.display = 'none' }}
+                    />
+                    <span className="truncate max-w-[80px]">{citeName}</span>
+                    <ExternalLink size={9} className="opacity-70 shrink-0" />
+                  </a>
+                )
+              }
+
+              return (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-400 hover:text-purple-300 underline inline-flex items-center gap-1 transition"
+                >
+                  {children}
+                  <ExternalLink size={13} />
+                </a>
+              )
+            },
             code: ({ className, children }) => {
               const value = String(children).trim()
               if (!className) {
@@ -204,34 +308,130 @@ function MessageBubble({ role, content, images, sources }) {
             }
           }}
         >
-          {content}
+          {processedContent}
         </Markdown>
 
-        {sources && sources.length > 0 && (
-          <div className='flex flex-wrap items-center gap-1.5 pt-2 select-none'>
-            <span className='text-[10px] font-semibold uppercase tracking-wider text-purple-400 mr-0.5'>Sources:</span>
-            {sources.slice(0, 4).map((src, idx) => {
-              let domain = ""
-              try {
-                domain = new URL(src.url || src).hostname.replace('www.', '')
-              } catch (e) {
-                domain = "source"
-              }
-              return (
-                <a
-                  key={idx}
-                  href={src.url || src}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className='inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] border border-purple-500/25 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 transition-colors'
-                  style={{ textDecoration: 'none' }}
-                >
-                  <span className='w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0'></span>
-                  <span className='max-w-[130px] truncate'>{src.title || domain}</span>
-                  <ExternalLink size={10} className='opacity-70 shrink-0' />
-                </a>
-              )
-            })}
+        {normalizedSources.length > 0 && (
+          <div className='pt-2 select-none'>
+            <button
+              type="button"
+              onClick={() => setIsSourcesExpanded(!isSourcesExpanded)}
+              className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 border'
+              style={{
+                backgroundColor: theme === 'dark' ? 'rgba(168, 85, 247, 0.12)' : 'rgba(147, 51, 234, 0.08)',
+                borderColor: isSourcesExpanded
+                  ? (theme === 'dark' ? 'rgba(168, 85, 247, 0.5)' : 'rgba(147, 51, 234, 0.4)')
+                  : (theme === 'dark' ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.1)'),
+                color: theme === 'dark' ? '#f3e8ff' : '#111827'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(168, 85, 247, 0.22)' : 'rgba(147, 51, 234, 0.15)'
+                e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.6)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(168, 85, 247, 0.12)' : 'rgba(147, 51, 234, 0.08)'
+                e.currentTarget.style.borderColor = isSourcesExpanded
+                  ? (theme === 'dark' ? 'rgba(168, 85, 247, 0.5)' : 'rgba(147, 51, 234, 0.4)')
+                  : (theme === 'dark' ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.1)')
+              }}
+            >
+              <Globe size={13} className={theme === 'dark' ? 'text-purple-300' : 'text-purple-600'} />
+              <span>{normalizedSources.length} sources</span>
+              {isSourcesExpanded ? (
+                <ChevronUp size={14} className="opacity-70 transition-transform" />
+              ) : (
+                <ChevronDown size={14} className="opacity-70 transition-transform" />
+              )}
+            </button>
+
+            {isSourcesExpanded && (
+              <div className='grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-3'>
+                {normalizedSources.map((src, idx) => {
+                  const domain = src.domain || "source"
+                  const favicon = src.favicon || `https://www.google.com/s2/favicons?domain=${domain}&sz=32`
+                  const siteName = src.siteName || domain
+
+                  return (
+                    <a
+                      key={idx}
+                      href={src.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className='flex flex-col justify-between p-3 rounded-xl border transition-all duration-200 no-underline group/card'
+                      style={{
+                        backgroundColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : '#ffffff',
+                        borderColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
+                        boxShadow: theme === 'dark' ? 'none' : '0 1px 4px rgba(0,0,0,0.04)'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(168, 85, 247, 0.08)' : '#faf5ff'
+                        e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.35)'
+                        e.currentTarget.style.transform = 'translateY(-1px)'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = theme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : '#ffffff'
+                        e.currentTarget.style.borderColor = theme === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)'
+                        e.currentTarget.style.transform = 'translateY(0)'
+                      }}
+                    >
+                      <div>
+                        <div className='flex items-center gap-2 mb-1.5'>
+                          <div className='w-4 h-4 rounded-full overflow-hidden bg-white/10 shrink-0 flex items-center justify-center'>
+                            <img
+                              src={favicon}
+                              alt=""
+                              className='w-3.5 h-3.5 object-contain'
+                              onError={(e) => { e.currentTarget.style.display = 'none' }}
+                            />
+                          </div>
+                          <span
+                            className='text-xs font-medium truncate'
+                            style={{ color: theme === 'dark' ? '#d8b4fe' : '#7e22ce' }}
+                          >
+                            {siteName}
+                          </span>
+                          <ExternalLink size={11} className='ml-auto opacity-50 group-hover/card:opacity-100 group-hover/card:text-purple-400 transition-opacity shrink-0' />
+                        </div>
+
+                        <h4
+                          className='text-[13px] font-semibold line-clamp-2 leading-snug transition-colors'
+                          style={{ color: theme === 'dark' ? '#FFFFFF' : '#111827' }}
+                        >
+                          {src.title || domain}
+                        </h4>
+
+                        {src.snippet && (
+                          <p
+                            className='text-[12px] line-clamp-2 mt-1 leading-relaxed'
+                            style={{ color: theme === 'dark' ? 'rgba(255, 255, 255, 0.6)' : '#4b5563' }}
+                          >
+                            {src.snippet}
+                          </p>
+                        )}
+                      </div>
+
+                      <div
+                        className='pt-2 mt-2 border-t flex items-center justify-between text-[11px]'
+                        style={{ borderColor: theme === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)' }}
+                      >
+                        <span className='truncate opacity-60 font-mono' style={{ color: theme === 'dark' ? '#94a3b8' : '#64748b' }}>
+                          {domain}
+                        </span>
+                        <span
+                          className='text-[10px] font-medium px-1.5 py-0.5 rounded'
+                          style={{
+                            backgroundColor: theme === 'dark' ? 'rgba(168, 85, 247, 0.15)' : 'rgba(147, 51, 234, 0.08)',
+                            color: theme === 'dark' ? '#c084fc' : '#9333ea'
+                          }}
+                        >
+                          #{idx + 1}
+                        </span>
+                      </div>
+                    </a>
+                  )
+                })}
+              </div>
+            )}
           </div>
         )}
 

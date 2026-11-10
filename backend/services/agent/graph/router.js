@@ -1,8 +1,6 @@
 import { getModel } from "../config/llmModels.js"
-import { agent } from "../controllers/agent.controller.js"
 
 export const router = async (state) => {
-
   if (state.agent && state.agent !== "auto") {
     return {
       ...state,
@@ -10,73 +8,53 @@ export const router = async (state) => {
     }
   }
 
-  if(state.file){
-if(state.file.mimetype==="application/pdf"){
-    return {
-      ...state,
-      agent:"pdfRag"
+  if (state.file) {
+    if (state.file.mimetype === "application/pdf") {
+      return {
+        ...state,
+        agent: "pdfRag"
+      }
+    }
+    if (state.file.mimetype.startsWith("image/")) {
+      return {
+        ...state,
+        agent: "imageAnalyzer"
+      }
     }
   }
-
-    if(state.file.mimetype.startsWith("image/")){
-    return {
-      ...state,
-      agent:"imageAnalyzer"
-    }
-  }
-  }
-
-  
-
 
   const llm = await getModel("router")
   const prompt = `You are an agent router.
 
 Available agents:
-
 - chat
 - search
 - coding
 - pdf
 - ppt
-- vision 
+- vision
 
 Rules:
 
 chat:
-General conversation,
-explanations,
-learning,
-questions.
+General chit-chat, greetings, advice, opinions, casual creative writing.
 
 search:
-Current events,
-latest information,
-news,
-recent developments,
-internet lookup.
+People, biographies, celebrities, founders, facts, real-world entities, questions like "who is", "what is", "kon hai", current events, latest news, recent developments, internet queries.
 
 coding:
-Generate code,
-debug code,
-build projects,
-architecture,
-API design.
+Write code, fix bugs, scripts, software design, HTML/CSS/JS, algorithms, API design.
 
 pdf:
-Questions about generate PDFs
-or document context.
+Generate PDF documents or PDF file requests.
 
 ppt:
-Questions about generate ppts
-or ppt context.
+Generate presentations or PPT slide decks.
 
 vision:
-  Generate image,
-  create image
+Generate or create images.
 
 Return ONLY one word:
-
 chat
 search
 coding
@@ -85,18 +63,12 @@ ppt
 vision
 
 User Query:
- ${state.prompt}
-`
+${state.prompt}`
 
   const response = await llm.invoke(prompt)
 
   return {
     ...state,
-    agent: response.content
-      .trim()
-      .toLowerCase()
+    agent: response.content.trim().toLowerCase()
   }
-
-
-
 }

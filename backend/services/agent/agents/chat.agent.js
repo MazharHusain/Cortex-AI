@@ -5,28 +5,59 @@ import { deductCredits } from "../utils/deductCredits.js"
 import { checkAgentLimit } from "../config/agentLimit.js"
 
 export const chatAgent = async (state) => {
-
-   
-
-    try {
-
-        await checkAgentLimit(state.userId,"chat")
-
-         const llm = await getModel("chat")
-
+  try {
+    await checkAgentLimit(state.userId, "chat")
+    const llm = await getModel("chat")
     const history = await getMemory(state.conversationId)
 
-   const searchContext=state.searchResults?`
-   Web Search Results:
+    let searchContext = ""
+    let sources = []
+    let parsedResults = state.searchResults
+    if (typeof parsedResults === "string") {
+      try {
+        parsedResults = JSON.parse(parsedResults)
+      } catch (e) {}
+    }
+    const rawResults = parsedResults?.results || (Array.isArray(parsedResults) ? parsedResults : [])
+    if (Array.isArray(rawResults) && rawResults.length > 0) {
+      sources = rawResults.map((r, i) => {
+        let domain = ""
+        let siteName = ""
+        try {
+          const u = new URL(r.url)
+          domain = u.hostname.replace(/^www\./, '')
+          const parts = domain.split('.')
+          siteName = parts[0]
+          siteName = siteName.charAt(0).toUpperCase() + siteName.slice(1)
+        } catch (e) {
+          domain = "web"
+          siteName = "Source"
+        }
+        return {
+          id: i + 1,
+          title: r.title || domain,
+          url: r.url,
+          domain,
+          siteName,
+          favicon: `https://www.google.com/s2/favicons?domain=${domain}&sz=32`,
+          snippet: r.content || ""
+        }
+      }).filter(s => s.url)
 
-${JSON.stringify(state.searchResults)}
+      if (sources.length > 0) {
+        const formattedSources = sources.map(s => `[${s.id}] "${s.title}" (${s.siteName}) - ${s.url}\nSummary: ${s.snippet}`).join("\n\n")
+        searchContext = `
+Web Search Results:
+${formattedSources}
 
-Answer the user using only the above search results.
-`:""
-
+Instructions for search results:
+- Answer the user's question accurately using these verified search results.
+- Cite the relevant source inline right after factual statements using bracketed numbers like [1], [2], or [3] matching the source numbers above.
+- Never invent or fabricate URLs or sources.`
+      }
+    }
 
     const systemPrompt = `You are Indus GPT, an advanced and intelligent AI assistant.
-
 ${searchContext}
 
 LANGUAGE MATCHING (Strict Requirement):
@@ -39,47 +70,40 @@ LANGUAGE MATCHING (Strict Requirement):
 - Reply directly to the user in their language.
 
 CONTENT & FORMATTING:
-- Answer directly and helpfully without rigid boilerplate templates like "Problems", "Improvements", "Best Practices", or "Optimized Code (if needed): N/A".
+- Answer directly and helpfully without rigid boilerplate templates.
+- NEVER include headings like "## Optimized Code (if needed)", "Problems", "Improvements", "Best Practices", or "N/A" disclaimers unless explicitly requested.
 - For biographies, general questions, or explanations, provide an engaging, well-structured, and accurate response.
 - Use clean Markdown with bullet points, numbered lists, or bold text where helpful.
 - Keep paragraphs readable and concise.`
 
     const messages = [
-        new SystemMessage(systemPrompt)
+      new SystemMessage(systemPrompt)
     ]
 
     history.forEach(msg => {
-        if (msg.role == "user") {
-            messages.push(new HumanMessage(msg.content))
-        }
-        if (msg.role == "assistant") {
-            messages.push(new AIMessage(msg.content))
-        }
-    });
+      if (msg.role === "user") {
+        messages.push(new HumanMessage(msg.content))
+      }
+      if (msg.role === "assistant") {
+        messages.push(new AIMessage(msg.content))
+      }
+    })
 
     messages.push(new HumanMessage(state.prompt))
 
     const response = await llm.invoke(messages)
-    await deductCredits(state.userId,"chat")
-
-    let sources = []
-    if (state.searchResults?.results && Array.isArray(state.searchResults.results)) {
-        sources = state.searchResults.results.map(r => ({ title: r.title, url: r.url })).filter(s => s.url)
-    }
+    await deductCredits(state.userId, "chat")
 
     return {
-        ...state,
-        aiResponse: response.content,
-        sources
+      ...state,
+      aiResponse: response.content,
+      sources
     }
-    } catch (error) {
-        console.log(error)
-         return {
-            ...state,
-            aiResponse:error?.data?.message || "failed to generate chat"
-        }
-        
-    
+  } catch (error) {
+    console.log(error)
+    return {
+      ...state,
+      aiResponse: error?.data?.message || "failed to generate chat"
     }
-   
+  }
 }

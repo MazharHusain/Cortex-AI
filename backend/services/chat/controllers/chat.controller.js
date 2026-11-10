@@ -1,7 +1,6 @@
 import Conversation from "../models/coversation.model.js"
 import Message from "../models/message.model.js"
 
-// In-memory fallback stores when MongoDB Atlas is offline or paused
 const memoryConversations = new Map()
 const memoryMessages = new Map()
 
@@ -83,7 +82,7 @@ export const updateConversation=async (req,res) => {
 
 export const saveMessage=async (req,res) => {
     try {
-        const {conversationId,role,content,images,artifacts}=req.body
+        const {conversationId,role,content,images,artifacts,sources}=req.body
 
         try {
             const message=await Message.create({
@@ -91,7 +90,8 @@ export const saveMessage=async (req,res) => {
                 content,
                 role,
                 images,
-                artifacts
+                artifacts,
+                sources
             })
             return res.status(200).json(message)
         } catch (dbErr) {
@@ -104,6 +104,7 @@ export const saveMessage=async (req,res) => {
                 content,
                 images: images || [],
                 artifacts: artifacts || [],
+                sources: sources || [],
                 createdAt: new Date()
             }
             if (!memoryMessages.has(conversationId)) {

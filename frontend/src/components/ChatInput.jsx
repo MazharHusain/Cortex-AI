@@ -116,7 +116,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
       } else if (selectedModel === "reasoning") {
         effectiveAgent = "search"
       } else {
-        effectiveAgent = "chat"
+        effectiveAgent = "auto"
       }
     }
     formData.append("agent", effectiveAgent)
@@ -213,6 +213,13 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
             }}
             value={value}
             rows={1}
+            spellCheck={false}
+            autoCorrect="off"
+            autoCapitalize="off"
+            autoComplete="off"
+            data-gramm="false"
+            data-gramm_editor="false"
+            data-enable-grammarly="false"
             className={`w-full bg-transparent outline-none resize-none text-[15px] leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-[180px] pt-1 ${
               theme === 'dark' ? 'placeholder:text-white caret-white' : 'placeholder:text-black caret-black'
             }`}
