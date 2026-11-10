@@ -2,13 +2,10 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install --ignore-scripts || true
+COPY backend/services/auth/package*.json ./services/auth/
+RUN cd services/auth && npm ci --omit=dev
 
-COPY services/auth/package*.json ./services/auth/
-RUN cd services/auth && npm install
-
-COPY services/auth ./services/auth
+COPY backend/services/auth ./services/auth
 
 WORKDIR /app/services/auth
 

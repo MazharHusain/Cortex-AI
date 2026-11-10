@@ -1,5 +1,5 @@
 [build]
-dockerfilePath = "gateway/Dockerfile"
+dockerfilePath = "backend/gateway/Dockerfile"
 
 [deploy]
 startCommand = "npm start"

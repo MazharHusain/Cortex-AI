@@ -1,5 +1,5 @@
 [build]
-dockerfilePath = "services/auth/Dockerfile"
+dockerfilePath = "backend/services/auth/Dockerfile"
 
 [deploy]
 startCommand = "npm start"
