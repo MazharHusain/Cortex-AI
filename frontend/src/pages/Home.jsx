@@ -133,6 +133,8 @@ function Home() {
                                 >
                                     {loginReason === "limit"
                                         ? "You have used 10 free chats. Sign up or log in to continue."
+                                        : loginReason === "attach"
+                                        ? "Please log in to attach files or media."
                                         : "Log in or sign up to save your chat history and continue."}
                                 </p>
                             </div>

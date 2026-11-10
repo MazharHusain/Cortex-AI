@@ -65,6 +65,14 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
     recognitionRef.current = recognition
   }, [])
 
+  const handleFileAttachClick = () => {
+    if (!userData) {
+      if (onLoginClick) onLoginClick("attach")
+      return
+    }
+    if (fileRef.current) fileRef.current.click()
+  }
+
   const toggleMic = () => {
     if (!recognitionRef.current) {
       alert("Speech recognition not supported in this browser.")
@@ -272,7 +280,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
 
               <button
                 type="button"
-                onClick={() => fileRef.current && fileRef.current.click()}
+                onClick={handleFileAttachClick}
                 title="Attach files (PDF, image)"
                 className='icon-pop flex items-center justify-center w-8 h-8 rounded-full border border-transparent hover:border-purple-400/40 cursor-pointer bg-transparent shrink-0'
                 style={{
