@@ -88,3 +88,18 @@ textarea, input {
   transform: translateY(0px) scale(0.98);
   box-shadow: 0 0 10px rgba(192, 132, 252, 0.5);
 }
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+@media (max-width: 1023px) {
+  .mobile-sidebar-hidden {
+    display: none !important;
+  }
+}

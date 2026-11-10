@@ -63,7 +63,7 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
   }
 
   return (
-    <header className='h-14 flex items-center justify-between px-4 border-b select-none shrink-0 z-10 transition-colors' style={{ backgroundColor: 'var(--bg-main)', borderColor: 'var(--border-header)' }}>
+    <header className='h-14 flex items-center justify-between px-3 sm:px-4 border-b select-none shrink-0 z-10 transition-colors' style={{ backgroundColor: 'var(--bg-main)', borderColor: 'var(--border-header)' }}>
       <div className='flex items-center gap-2'>
         {onToggleSidebar && (
           <button
@@ -106,7 +106,7 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
 
           {modelDropdownOpen && (
             <div
-              className='absolute top-full left-0 mt-2 w-72 rounded-2xl border shadow-2xl p-2 z-50'
+              className='absolute top-full left-0 mt-2 w-[280px] sm:w-72 rounded-2xl border shadow-2xl p-2 z-50'
               style={{
                 backgroundColor: theme === 'light' ? '#ffffff' : '#171717',
                 borderColor: theme === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)',
@@ -230,8 +230,7 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
           <>
             <button
               onClick={onOpenBilling}
-              className='icon-pop hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border text-[12px] font-medium cursor-pointer shadow-[0_0_12px_rgba(168,85,247,0.2)]'
-              style={{
+              className='icon-pop hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border text-[12px] font-medium cursor-pointer shadow-[0_0_12px_rgba(168,85,247,0.2)]'              style={{
                 color: theme === 'light' ? '#000000' : '#FFFFFF',
                 backgroundColor: theme === 'light' ? 'rgba(168,85,247,0.15)' : 'rgba(168,85,247,0.1)',
                 borderColor: theme === 'light' ? 'rgba(168,85,247,0.35)' : 'rgba(168,85,247,0.3)'

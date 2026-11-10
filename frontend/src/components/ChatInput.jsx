@@ -175,7 +175,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
   const hasContent = Boolean(value.trim() || selectedFile)
 
   return (
-    <div className='w-full px-4 pb-3 pt-1 select-none transition-colors' style={{ backgroundColor: 'var(--bg-main)' }}>
+    <div className='w-full px-3 sm:px-4 pb-3 pt-1 select-none transition-colors' style={{ backgroundColor: 'var(--bg-main)' }}>
       <div className='max-w-3xl mx-auto'>
         <div
           className='rounded-[26px] border shadow-xl p-2.5 px-4 transition-all focus-within:border-purple-400/50 focus-within:shadow-[0_0_20px_rgba(168,85,247,0.25)]'

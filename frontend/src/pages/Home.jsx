@@ -19,6 +19,7 @@ function Home() {
     const [loginLoading, setLoginLoading] = useState(false)
     const [loginError, setLoginError] = useState('')
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
 
     const handleLogin = async (token) => {
         try {
@@ -67,11 +68,19 @@ function Home() {
                 onLoginClick={() => setShowLoginModal(true)}
                 collapsed={sidebarCollapsed}
                 setCollapsed={setSidebarCollapsed}
+                mobileOpen={mobileSidebarOpen}
+                setMobileOpen={setMobileSidebarOpen}
             />
 
             <ChatArea
                 onLoginClick={() => setShowLoginModal(true)}
-                onToggleSidebar={() => setSidebarCollapsed(prev => !prev)}
+                onToggleSidebar={() => {
+                    if (window.innerWidth < 1024) {
+                        setMobileSidebarOpen(prev => !prev)
+                    } else {
+                        setSidebarCollapsed(prev => !prev)
+                    }
+                }}
             />
 
             <Artifact />
