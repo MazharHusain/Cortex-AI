@@ -16,16 +16,12 @@ const port =process.env.PORT
 const app=express()
 
 const connectDb = async () => {
-    try {
-        if (process.env.MONGODB_URI) {
-            await mongoose.connect(process.env.MONGODB_URI)
-            console.log("gateway db connected")
-        }
-    } catch (error) {
-        console.log(`gateway db error ${error}`)
+    if (!process.env.MONGODB_URI) {
+        throw new Error("MONGODB_URI is required by the billing API")
     }
+    await mongoose.connect(process.env.MONGODB_URI)
+    console.log("gateway db connected")
 }
-connectDb()
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -51,6 +47,13 @@ app.get("/",(req,res)=>{
     res.json({message:"hello from gateway v6"})
 })
 
-app.listen(port,()=>{
-    console.log(`gateway started at ${port}`)
-})
+connectDb()
+    .then(() => {
+        app.listen(port, () => {
+            console.log(`gateway started at ${port}`)
+        })
+    })
+    .catch((error) => {
+        console.error(`gateway startup error: ${error.message}`)
+        process.exit(1)
+    })
