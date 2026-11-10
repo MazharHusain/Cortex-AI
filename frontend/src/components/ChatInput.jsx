@@ -148,9 +148,15 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
   const hasContent = Boolean(value.trim() || selectedFile)
 
   return (
-    <div className='w-full bg-[#212121] px-4 pb-3 pt-1 select-none'>
+    <div className='w-full px-4 pb-3 pt-1 select-none transition-colors' style={{ backgroundColor: 'var(--bg-main)' }}>
       <div className='max-w-3xl mx-auto'>
-        <div className='bg-[#2f2f2f] rounded-[26px] border border-white/[0.08] shadow-xl p-2.5 px-4 transition-all focus-within:border-purple-400/50 focus-within:shadow-[0_0_20px_rgba(168,85,247,0.25)]'>
+        <div
+          className='rounded-[26px] border shadow-xl p-2.5 px-4 transition-all focus-within:border-purple-400/50 focus-within:shadow-[0_0_20px_rgba(168,85,247,0.25)]'
+          style={{
+            backgroundColor: 'var(--bg-input)',
+            borderColor: 'var(--border-subtle)'
+          }}
+        >
           {selectedFile && (
             <div className='mb-2 pt-1'>
               <div className='inline-flex items-center gap-2 rounded-xl bg-purple-500/10 border border-purple-400/30 px-3 py-1.5 shadow-[0_0_12px_rgba(168,85,247,0.2)]'>
@@ -193,7 +199,8 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
             }}
             value={value}
             rows={1}
-            className="w-full bg-transparent outline-none resize-none text-[15px] text-purple-100 placeholder:text-purple-300/40 caret-purple-400 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-[180px] pt-1"
+            className="w-full bg-transparent outline-none resize-none text-[15px] placeholder:text-purple-300/40 caret-purple-400 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-[180px] pt-1"
+            style={{ color: 'var(--text-user)' }}
           />
 
           <div className='flex items-center justify-between pt-1 gap-2'>
@@ -230,7 +237,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
                       className={`icon-pop flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium cursor-pointer border shrink-0 ${
                         isActive
                           ? "bg-purple-600/30 border-purple-400/60 text-purple-100 shadow-[0_0_12px_rgba(168,85,247,0.35)]"
-                          : "bg-white/[0.04] border-white/[0.06] text-purple-300/70 hover:bg-purple-600/15 hover:border-purple-400/40 hover:text-purple-100"
+                          : "bg-purple-500/5 border-purple-500/15 text-purple-300/80 hover:bg-purple-600/15 hover:border-purple-400/40 hover:text-purple-100"
                       }`}
                     >
                       <Icon size={12} className={isActive ? "text-purple-300" : "text-purple-400/70"} />
@@ -272,7 +279,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
           </div>
         </div>
 
-        <p className='text-[11.5px] text-purple-300/50 text-center mt-2 select-none'>
+        <p className='text-[11.5px] text-center mt-2 select-none' style={{ color: 'var(--text-muted)' }}>
           Indus GPT can make mistakes. Verify important info.
         </p>
       </div>

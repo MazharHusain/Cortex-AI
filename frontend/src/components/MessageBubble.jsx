@@ -30,7 +30,14 @@ function MessageBubble({ role, content, images }) {
   if (isUser) {
     return (
       <div className='flex justify-end w-full'>
-        <div className='max-w-[85%] md:max-w-[70%] bg-[#2f2f2f] text-[#ececec] px-5 py-3 rounded-[24px] rounded-br-md text-[15px] leading-relaxed break-words shadow-sm'>
+        <div
+          className='max-w-[85%] md:max-w-[70%] border px-5 py-3 rounded-[24px] rounded-br-md text-[15px] leading-relaxed break-words shadow-[0_0_15px_rgba(168,85,247,0.18)] transition-colors'
+          style={{
+            backgroundColor: 'var(--bg-user-bubble)',
+            borderColor: 'var(--border-user-bubble)',
+            color: 'var(--text-user)'
+          }}
+        >
           {images && images.length > 0 && (
             <div className='flex flex-wrap gap-2 mb-2'>
               {images.map((img, i) => (
@@ -40,12 +47,12 @@ function MessageBubble({ role, content, images }) {
                   onClick={() => setLightBox(img)}
                   loading="lazy"
                   alt="Upload"
-                  className="w-36 h-24 rounded-xl object-cover border border-white/10 cursor-zoom-in hover:opacity-90 transition"
+                  className="w-36 h-24 rounded-xl object-cover border border-purple-400/30 cursor-zoom-in hover:opacity-90 transition"
                 />
               ))}
             </div>
           )}
-          <p className='whitespace-pre-wrap'>{content}</p>
+          <p className='whitespace-pre-wrap font-medium tracking-wide' style={{ color: 'var(--text-user)' }}>{content}</p>
         </div>
       </div>
     )
@@ -57,7 +64,7 @@ function MessageBubble({ role, content, images }) {
         <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' />
       </div>
 
-      <div className='flex-1 min-w-0 text-[#ececec] text-[15px] leading-relaxed break-words space-y-2'>
+      <div className='flex-1 min-w-0 text-[15px] leading-relaxed break-words space-y-2' style={{ color: 'var(--text-main)' }}>
         {images && images.length > 0 && (
           <div className='flex flex-wrap gap-3 my-3'>
             {images.map((img, i) => (
@@ -68,7 +75,7 @@ function MessageBubble({ role, content, images }) {
                 loading="lazy"
                 alt="AI Generated"
                 onError={(e) => e.currentTarget.remove()}
-                className="w-48 h-32 rounded-xl object-cover border border-white/10 cursor-zoom-in hover:opacity-95 transition shadow-md"
+                className="w-48 h-32 rounded-xl object-cover border border-purple-400/20 cursor-zoom-in hover:opacity-95 transition shadow-md"
               />
             ))}
           </div>
@@ -78,13 +85,13 @@ function MessageBubble({ role, content, images }) {
           remarkPlugins={[remarkGfm]}
           components={{
             h1: ({ children }) => (
-              <h1 className='text-2xl font-bold mt-4 mb-2 text-white'>{children}</h1>
+              <h1 className='text-2xl font-bold mt-4 mb-2' style={{ color: 'var(--text-heading)' }}>{children}</h1>
             ),
             h2: ({ children }) => (
-              <h2 className='text-xl font-semibold mt-3 mb-2 text-white'>{children}</h2>
+              <h2 className='text-xl font-semibold mt-3 mb-2' style={{ color: 'var(--text-heading)' }}>{children}</h2>
             ),
             h3: ({ children }) => (
-              <h3 className='text-lg font-semibold mt-2.5 mb-1.5 text-white'>{children}</h3>
+              <h3 className='text-lg font-semibold mt-2.5 mb-1.5' style={{ color: 'var(--text-heading)' }}>{children}</h3>
             ),
             p: ({ children }) => (
               <p className='mb-3 whitespace-pre-wrap break-words leading-7'>{children}</p>
@@ -96,19 +103,19 @@ function MessageBubble({ role, content, images }) {
               <ol className='list-decimal pl-5 space-y-1 my-2'>{children}</ol>
             ),
             table: ({ children }) => (
-              <div className='overflow-x-auto my-4 rounded-xl border border-white/10'>
-                <table className='min-w-full text-sm divide-y divide-white/10'>
+              <div className='overflow-x-auto my-4 rounded-xl border' style={{ borderColor: 'var(--border-subtle)' }}>
+                <table className='min-w-full text-sm divide-y' style={{ borderColor: 'var(--border-subtle)' }}>
                   {children}
                 </table>
               </div>
             ),
             th: ({ children }) => (
-              <th className='bg-white/[0.06] px-3.5 py-2 text-left font-semibold text-white'>
+              <th className='bg-purple-500/10 px-3.5 py-2 text-left font-semibold' style={{ color: 'var(--text-heading)' }}>
                 {children}
               </th>
             ),
             td: ({ children }) => (
-              <td className='px-3.5 py-2 border-t border-white/[0.06] text-slate-300'>
+              <td className='px-3.5 py-2 border-t' style={{ borderColor: 'var(--border-subtle)' }}>
                 {children}
               </td>
             ),
@@ -127,7 +134,7 @@ function MessageBubble({ role, content, images }) {
               const value = String(children).trim()
               if (!className) {
                 return (
-                  <code className='px-1.5 py-0.5 rounded-md bg-white/[0.08] text-purple-200 text-[13px] font-mono'>
+                  <code className='px-1.5 py-0.5 rounded-md bg-purple-500/15 text-purple-300 text-[13px] font-mono'>
                     {value}
                   </code>
                 )
@@ -186,7 +193,7 @@ function MessageBubble({ role, content, images }) {
                   loading="lazy"
                   alt="Embedded"
                   onError={(e) => e.currentTarget.remove()}
-                  className="w-48 h-32 rounded-xl object-cover border border-white/10 cursor-zoom-in hover:opacity-90 transition my-2"
+                  className="w-48 h-32 rounded-xl object-cover border border-purple-400/20 cursor-zoom-in hover:opacity-90 transition my-2"
                 />
               )
             }

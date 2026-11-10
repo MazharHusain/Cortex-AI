@@ -1,5 +1,37 @@
 @import "tailwindcss";
 
+:root, [data-theme="dark"] {
+  --bg-main: #212121;
+  --bg-sidebar: #171717;
+  --bg-input: #2f2f2f;
+  --bg-card: #2a2a2a;
+  --bg-card-hover: #343434;
+  --bg-user-bubble: #2a2236;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-header: rgba(255, 255, 255, 0.06);
+  --border-user-bubble: rgba(168, 85, 247, 0.35);
+  --text-main: #ececec;
+  --text-heading: #ffffff;
+  --text-muted: #94a3b8;
+  --text-user: #f3e8ff;
+}
+
+[data-theme="light"] {
+  --bg-main: #f8f9fa;
+  --bg-sidebar: #f0f2f5;
+  --bg-input: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f3f4f6;
+  --bg-user-bubble: #f3e8ff;
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-header: rgba(0, 0, 0, 0.06);
+  --border-user-bubble: rgba(168, 85, 247, 0.45);
+  --text-main: #1f2937;
+  --text-heading: #111827;
+  --text-muted: #64748b;
+  --text-user: #581c87;
+}
+
 ::selection {
   background-color: rgba(168, 85, 247, 0.45);
   color: #ffffff;

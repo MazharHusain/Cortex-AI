@@ -46,19 +46,19 @@ function MessageList({ onSelectPrompt }) {
   ]
 
   return (
-    <div className='flex-1 overflow-y-auto px-4 md:px-6 py-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-[#212121]'>
+    <div className='flex-1 overflow-y-auto px-4 md:px-6 py-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors' style={{ backgroundColor: 'var(--bg-main)' }}>
       {messages.length === 0 || !selectedConversation ? (
         <div className="h-full flex flex-col items-center justify-center max-w-2xl mx-auto px-4 text-center my-auto">
           <div className='relative mb-5 flex flex-col items-center'>
-            <div className='w-20 h-20 rounded-2xl bg-gradient-to-tr from-purple-600/30 to-blue-500/30 p-1.5 border border-white/10 shadow-2xl flex items-center justify-center'>
+            <div className='w-20 h-20 rounded-2xl bg-gradient-to-tr from-purple-600/30 to-blue-500/30 p-1.5 border border-purple-400/20 shadow-2xl flex items-center justify-center'>
               <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' />
             </div>
           </div>
 
-          <h1 className='text-2xl md:text-3xl font-semibold text-white tracking-tight mb-2'>
+          <h1 className='text-2xl md:text-3xl font-semibold tracking-tight mb-2' style={{ color: 'var(--text-heading)' }}>
             What can I help with today?
           </h1>
-          <p className='text-sm text-slate-400 max-w-md mb-8 leading-relaxed'>
+          <p className='text-sm max-w-md mb-8 leading-relaxed' style={{ color: 'var(--text-muted)' }}>
             Ask me anything — code, reasoning, analysis, documents, or create presentations with Indus GPT.
           </p>
 
@@ -69,13 +69,25 @@ function MessageList({ onSelectPrompt }) {
                 <button
                   key={i}
                   onClick={() => onSelectPrompt && onSelectPrompt(`${item.title} ${item.desc}`)}
-                  className='p-4 rounded-2xl bg-[#2a2a2a] hover:bg-[#343434] border border-white/[0.06] hover:border-purple-400/30 transition-colors duration-150 cursor-pointer flex flex-col gap-1.5 text-left'
+                  className='p-4 rounded-2xl border transition-colors duration-150 cursor-pointer flex flex-col gap-1.5 text-left'
+                  style={{
+                    backgroundColor: 'var(--bg-card)',
+                    borderColor: 'var(--border-subtle)',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.backgroundColor = 'var(--bg-card-hover)'
+                    e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.4)'
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.backgroundColor = 'var(--bg-card)'
+                    e.currentTarget.style.borderColor = 'var(--border-subtle)'
+                  }}
                 >
                   <div className='flex items-center gap-2'>
                     <Icon size={16} className={item.color} />
-                    <span className='text-[13.5px] font-medium text-slate-100'>{item.title}</span>
+                    <span className='text-[13.5px] font-medium' style={{ color: 'var(--text-heading)' }}>{item.title}</span>
                   </div>
-                  <span className='text-[12px] text-slate-400 pl-6'>{item.desc}</span>
+                  <span className='text-[12px] pl-6' style={{ color: 'var(--text-muted)' }}>{item.desc}</span>
                 </button>
               )
             })}
