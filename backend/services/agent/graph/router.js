@@ -1,5 +1,3 @@
-import { getModel } from "../config/llmModels.js"
-
 export const router = async (state) => {
   if (state.agent && state.agent !== "auto") {
     return {
@@ -23,52 +21,24 @@ export const router = async (state) => {
     }
   }
 
-  const llm = await getModel("router")
-  const prompt = `You are an agent router.
-
-Available agents:
-- chat
-- search
-- coding
-- pdf
-- ppt
-- vision
-
-Rules:
-
-chat:
-General chit-chat, greetings, advice, opinions, casual creative writing.
-
-search:
-People, biographies, celebrities, founders, facts, real-world entities, questions like "who is", "what is", "kon hai", current events, latest news, recent developments, internet queries.
-
-coding:
-Write code, fix bugs, scripts, software design, HTML/CSS/JS, algorithms, API design.
-
-pdf:
-Generate PDF documents or PDF file requests.
-
-ppt:
-Generate presentations or PPT slide decks.
-
-vision:
-Generate or create images.
-
-Return ONLY one word:
-chat
-search
-coding
-pdf
-ppt
-vision
-
-User Query:
-${state.prompt}`
-
-  const response = await llm.invoke(prompt)
-
+  const query = String(state.prompt || "")
+  if (/\b(ppt|slides|presentation)\b/i.test(query)) {
+    return { ...state, agent: "ppt" }
+  }
+  if (/\bpdf\b/i.test(query) && /\b(generate|create|make|banao|bana)\b/i.test(query)) {
+    return { ...state, agent: "pdf" }
+  }
+  if (/\b(generate|create|draw|banao)\b/i.test(query) && /\b(image|picture|photo|logo)\b/i.test(query)) {
+    return { ...state, agent: "vision" }
+  }
+  if (/\b(code|function|bug|html|css|javascript|python|api|script)\b/i.test(query)) {
+    return { ...state, agent: "coding" }
+  }
+  if (/\b(who is|what is|kon hai|kya hai|latest|news|weather|price|ceo|founder|when was|where is|search)\b/i.test(query)) {
+    return { ...state, agent: "search" }
+  }
   return {
     ...state,
-    agent: response.content.trim().toLowerCase()
+    agent: "chat"
   }
 }

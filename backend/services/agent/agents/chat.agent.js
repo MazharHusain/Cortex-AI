@@ -92,7 +92,7 @@ CONTENT & FORMATTING:
     messages.push(new HumanMessage(state.prompt))
 
     const response = await llm.invoke(messages)
-    await deductCredits(state.userId, "chat")
+    deductCredits(state.userId, "chat").catch(() => {})
 
     let cleanResponse = (response.content || "")
       .replace(/(?:#{1,6}\s*)?\**Optimized Code(?:\s*\(if needed\))?\**[:\s]*[\s\S]*?(?=(?:#{1,6}\s|\n\n[A-Z]|$))/gi, "")

@@ -28,11 +28,11 @@ function BillingDrawer({ open, onClose }) {
     const [payError, setPayError] = useState("")
     const [payMode, setPayMode] = useState("")
     const isLight = theme === "light"
-    const panelBg = isLight ? "#f0f2f5" : "#0f1117"
-    const cardBg = isLight ? "#ffffff" : "rgba(255,255,255,0.04)"
+    const panelBg = isLight ? "#ffffff" : "#0f1117"
+    const cardBg = isLight ? "#f8fafc" : "rgba(255,255,255,0.04)"
     const border = isLight ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.1)"
-    const heading = isLight ? "#111111" : "#ffffff"
-    const muted = isLight ? "#475569" : "#94a3b8"
+    const heading = isLight ? "#0f172a" : "#ffffff"
+    const muted = isLight ? "#64748b" : "#94a3b8"
 
     const applyCredits = async (result) => {
         if (result?.credits != null) {

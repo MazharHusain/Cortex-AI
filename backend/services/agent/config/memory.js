@@ -1,6 +1,9 @@
 import redis from "../redis/redis.js"
 import { getMessages } from "../utils/getMessages.js"
 export const getMemory=async (conversationId)=>{
+    if (!conversationId || conversationId === "undefined") {
+        return []
+    }
     const key=`messages-${conversationId}`
     const cached=await redis.get(key)
     if(cached){

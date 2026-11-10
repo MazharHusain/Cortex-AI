@@ -16,6 +16,7 @@ function Home() {
     const dispatch = useDispatch()
     const { theme } = useTheme()
     const [showLoginModal, setShowLoginModal] = useState(false)
+    const [loginReason, setLoginReason] = useState("")
     const [loginLoading, setLoginLoading] = useState(false)
     const [loginError, setLoginError] = useState('')
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
@@ -65,7 +66,10 @@ function Home() {
     return (
         <div className='h-screen h-[100dvh] flex overflow-hidden font-sans transition-colors' style={{ backgroundColor: 'var(--bg-main)', color: 'var(--text-main)' }}>
             <SideBar
-                onLoginClick={() => setShowLoginModal(true)}
+                onLoginClick={(reason) => {
+                    setLoginReason(reason || "")
+                    setShowLoginModal(true)
+                }}
                 collapsed={sidebarCollapsed}
                 setCollapsed={setSidebarCollapsed}
                 mobileOpen={mobileSidebarOpen}
@@ -73,7 +77,10 @@ function Home() {
             />
 
             <ChatArea
-                onLoginClick={() => setShowLoginModal(true)}
+                onLoginClick={(reason) => {
+                    setLoginReason(reason || "")
+                    setShowLoginModal(true)
+                }}
                 onToggleSidebar={() => {
                     if (window.innerWidth < 1024) {
                         setMobileSidebarOpen(prev => !prev)
@@ -124,7 +131,9 @@ function Home() {
                                     className='text-[13px]'
                                     style={{ color: theme === 'light' ? '#475569' : '#94a3b8' }}
                                 >
-                                    Log in or sign up to save your chat history and continue.
+                                    {loginReason === "limit"
+                                        ? "You have used 10 free chats. Sign up or log in to continue."
+                                        : "Log in or sign up to save your chat history and continue."}
                                 </p>
                             </div>
                         </div>

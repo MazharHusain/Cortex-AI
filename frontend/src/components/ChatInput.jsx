@@ -88,8 +88,9 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
   }
 
   const handleSendMessage = async () => {
-    if (!userData) {
-      if (onLoginClick) onLoginClick()
+    const guestUsed = Number(localStorage.getItem("indus_guest_chats") || 0)
+    if (!userData && guestUsed >= 10) {
+      if (onLoginClick) onLoginClick("limit")
       return
     }
     const trimmedVal = value.trim()
@@ -97,7 +98,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
 
     dispatch(setIsLoading(true))
     let conversation = selectedConversation
-    if (!conversation) {
+    if (userData && !conversation) {
       dispatch(setMessages([]))
       const conv = await createConversation()
       if (conv && conv._id) {
@@ -107,8 +108,8 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
       }
     }
 
-    if (conversation?.title === "New Chat") {
-      await updateConversation({ id: conversation?._id, title: trimmedVal })
+    if (userData && conversation?.title === "New Chat") {
+      updateConversation({ id: conversation?._id, title: trimmedVal }).catch(() => {})
       dispatch(setConvTitle({ conversationId: conversation?._id, title: trimmedVal.slice(0, 40) }))
     }
 
@@ -121,7 +122,9 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
     let effectiveAgent = selectedAgent.toLowerCase()
     const isSearchQuery = /who is|what is|kon hai|kya hai|latest|news|weather|price|ceo|founder|history|biography|when was|where is|tell me about|search/i.test(trimmedVal)
 
-    if (effectiveAgent === "search" || isSearchQuery) {
+    if (selectedFile) {
+      effectiveAgent = "auto"
+    } else if (effectiveAgent === "search" || isSearchQuery) {
       effectiveAgent = "search"
     } else if (effectiveAgent === "auto") {
       if (selectedModel === "coding") {
@@ -129,7 +132,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
       } else if (selectedModel === "reasoning") {
         effectiveAgent = "search"
       } else {
-        effectiveAgent = "auto"
+        effectiveAgent = "chat"
       }
     }
     formData.append("agent", effectiveAgent)
@@ -146,7 +149,19 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
 
     const data = await sendMessage(formData)
     dispatch(setIsLoading(false))
-    if (data) {
+    if (data?.code === "GUEST_LIMIT") {
+      localStorage.setItem("indus_guest_chats", "10")
+      dispatch(addMessage({
+        role: "assistant",
+        content: "Please sign up or log in to continue chatting."
+      }))
+      if (onLoginClick) onLoginClick("limit")
+      return
+    }
+    if (!userData && data && !data.error) {
+      localStorage.setItem("indus_guest_chats", String(guestUsed + 1))
+    }
+    if (data && !data.error) {
       dispatch(setArtifacts(data.artifacts || []))
       dispatch(addMessage({
         role: "assistant",

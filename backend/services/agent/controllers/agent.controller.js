@@ -7,17 +7,14 @@ export const agent = async (req, res, next) => {
     const { prompt, conversationId, agent } = req.body
     const file = req.file
     const userId = req.headers["x-user-id"] || "anonymous"
+    const canSave = conversationId && conversationId !== "undefined"
 
-    try {
-      if (conversationId && conversationId !== "undefined") {
-        await axios.post(`${process.env.CHAT_SERVICE}/save-message`, {
-          conversationId,
-          role: "user",
-          content: prompt
-        }, { timeout: 4000 })
-      }
-    } catch (chatErr) {
-      console.error(chatErr.message)
+    if (canSave) {
+      axios.post(`${process.env.CHAT_SERVICE}/save-message`, {
+        conversationId,
+        role: "user",
+        content: prompt
+      }, { timeout: 4000 }).catch((chatErr) => console.error(chatErr.message))
     }
 
     const result = await graph.invoke({
@@ -66,11 +63,11 @@ export const agent = async (req, res, next) => {
       .replace(/Optimized Code[\s\S]*$/gi, "")
       .trim()
 
-    try {
-      if (conversationId && conversationId !== "undefined") {
-        await addMessage(conversationId, "user", prompt)
-        await addMessage(conversationId, "assistant", answer)
-        await axios.post(`${process.env.CHAT_SERVICE}/save-message`, {
+    if (canSave) {
+      Promise.all([
+        addMessage(conversationId, "user", prompt),
+        addMessage(conversationId, "assistant", answer),
+        axios.post(`${process.env.CHAT_SERVICE}/save-message`, {
           conversationId,
           role: "assistant",
           content: answer,
@@ -78,9 +75,7 @@ export const agent = async (req, res, next) => {
           artifacts: result?.artifacts,
           sources: sources
         }, { timeout: 4000 })
-      }
-    } catch (chatErr) {
-      console.error(chatErr.message)
+      ]).catch((chatErr) => console.error(chatErr.message))
     }
 
     return res.status(200).json({

@@ -8,7 +8,7 @@ export const searchAgent = async (state) => {
     const results = await searchTool.invoke({
       query: state.prompt
     })
-    await deductCredits(state.userId, "search")
+    deductCredits(state.userId, "search").catch(() => {})
     return {
       ...state,
       searchResults: results,
