@@ -27,9 +27,19 @@
   --border-header: rgba(0, 0, 0, 0.06);
   --border-user-bubble: rgba(168, 85, 247, 0.45);
   --text-main: #1f2937;
-  --text-heading: #111827;
-  --text-muted: #64748b;
+  --text-heading: #000000;
+  --text-muted: #475569;
   --text-user: #581c87;
+}
+
+[data-theme="light"] textarea::placeholder {
+  color: #000000 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="dark"] textarea::placeholder {
+  color: #ffffff !important;
+  opacity: 1 !important;
 }
 
 ::selection {

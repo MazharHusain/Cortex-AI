@@ -30,9 +30,13 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
           <button
             onClick={onToggleSidebar}
             title="Toggle sidebar"
-            className='icon-pop flex items-center justify-center w-9 h-9 rounded-xl text-purple-400 hover:text-purple-200 bg-purple-500/10 hover:bg-purple-600/20 border border-purple-500/20 hover:border-purple-400/40 cursor-pointer'
+            className='icon-pop flex items-center justify-center w-9 h-9 rounded-xl border border-transparent hover:border-purple-400/40 cursor-pointer'
+            style={{
+              color: theme === 'light' ? '#000000' : '#c084fc',
+              backgroundColor: theme === 'light' ? 'rgba(0,0,0,0.05)' : 'rgba(168,85,247,0.1)'
+            }}
           >
-            <PanelLeft size={18} />
+            <PanelLeft size={18} color={theme === 'light' ? '#000000' : '#c084fc'} />
           </button>
         )}
 
@@ -41,20 +45,42 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
           title="New chat"
           className='icon-pop btn-fancy-purple flex items-center justify-center w-9 h-9 rounded-xl cursor-pointer border-none lg:hidden'
         >
-          <Plus size={18} />
+          <Plus size={18} color="#FFFFFF" />
         </button>
 
-        <div className='icon-pop flex items-center gap-2.5 px-3 py-1.5 rounded-2xl bg-purple-500/5 hover:bg-purple-600/15 border border-purple-500/20 hover:border-purple-400/40 cursor-pointer group'>
+        <div
+          className='icon-pop flex items-center gap-2.5 px-3 py-1.5 rounded-2xl border cursor-pointer group'
+          style={{
+            backgroundColor: theme === 'light' ? 'rgba(0,0,0,0.04)' : 'rgba(168,85,247,0.05)',
+            borderColor: theme === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(168,85,247,0.2)'
+          }}
+        >
           <img src="/logo.png" alt="Indus GPT" className='w-8 h-8 rounded-lg object-contain' />
-          <span className='text-[16px] font-bold tracking-tight' style={{ color: 'var(--text-heading)' }}>Indus GPT</span>
-          <span className='text-[11px] font-medium text-purple-300 bg-purple-500/20 border border-purple-400/30 px-1.5 py-0.2 rounded-md ml-0.5 shadow-[0_0_10px_rgba(168,85,247,0.3)]'>
+          <span className='text-[16px] font-bold tracking-tight' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>Indus GPT</span>
+          <span
+            className='text-[11px] px-1.5 py-0.2 rounded-md ml-0.5'
+            style={{
+              color: theme === 'light' ? '#000000' : '#d8b4fe',
+              backgroundColor: theme === 'light' ? 'rgba(168,85,247,0.2)' : 'rgba(168,85,247,0.2)',
+              borderColor: theme === 'light' ? 'rgba(168,85,247,0.4)' : 'rgba(192,132,252,0.3)',
+              borderWidth: '1px',
+              fontWeight: theme === 'light' ? '700' : '500',
+              boxShadow: '0 0 10px rgba(168,85,247,0.3)'
+            }}
+          >
             4o
           </span>
-          <ChevronDown size={14} className='text-purple-400 group-hover:text-purple-200 ml-0.5 transition-transform group-hover:translate-y-0.5' />
+          <ChevronDown size={14} color={theme === 'light' ? '#000000' : '#c084fc'} className='ml-0.5 transition-transform group-hover:translate-y-0.5' />
         </div>
 
         {selectedConversation && selectedConversation.title !== "New Chat" && (
-          <span className='hidden md:inline-block text-[13px] text-purple-300/80 max-w-[200px] truncate ml-2 pl-3 border-l' style={{ borderColor: 'var(--border-subtle)' }}>
+          <span
+            className='hidden md:inline-block text-[13px] max-w-[200px] truncate ml-2 pl-3 border-l'
+            style={{
+              color: theme === 'light' ? '#000000' : 'rgba(216,180,254,0.8)',
+              borderColor: 'var(--border-subtle)'
+            }}
+          >
             {selectedConversation.title}
           </span>
         )}
@@ -64,19 +90,31 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
         <button
           onClick={toggleTheme}
           title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          className='icon-pop flex items-center justify-center w-8 h-8 rounded-xl cursor-pointer transition-colors text-purple-400 hover:text-purple-200 bg-purple-500/10 hover:bg-purple-600/20 border border-purple-500/25 hover:border-purple-400/50'
+          className='icon-pop flex items-center justify-center w-8 h-8 rounded-xl cursor-pointer transition-colors border'
+          style={{
+            color: theme === 'dark' ? '#FFFFFF' : '#000000',
+            backgroundColor: theme === 'dark' ? 'rgba(168,85,247,0.15)' : 'rgba(0,0,0,0.06)',
+            borderColor: theme === 'dark' ? 'rgba(168,85,247,0.3)' : 'rgba(0,0,0,0.12)'
+          }}
         >
-          {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+          {theme === 'dark' ? <Sun size={16} color="#FFFFFF" /> : <Moon size={16} color="#000000" />}
         </button>
 
         {userData ? (
           <>
             <button
               onClick={onOpenBilling}
-              className='icon-pop hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 hover:border-purple-400/60 text-[12px] font-medium text-purple-300 cursor-pointer shadow-[0_0_12px_rgba(168,85,247,0.2)]'
+              className='icon-pop hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border text-[12px] font-medium cursor-pointer shadow-[0_0_12px_rgba(168,85,247,0.2)]'
+              style={{
+                color: theme === 'light' ? '#000000' : '#d8b4fe',
+                backgroundColor: theme === 'light' ? 'rgba(168,85,247,0.15)' : 'rgba(168,85,247,0.1)',
+                borderColor: theme === 'light' ? 'rgba(168,85,247,0.35)' : 'rgba(168,85,247,0.3)'
+              }}
             >
-              <Sparkles size={13} className='text-purple-400' />
-              <span>{userData.credits ?? 100} credits</span>
+              <Sparkles size={13} color={theme === 'light' ? '#000000' : '#c084fc'} />
+              <span style={{ color: theme === 'light' ? '#000000' : '#d8b4fe', fontWeight: theme === 'light' ? '600' : '500' }}>
+                {userData.credits ?? 100} credits
+              </span>
             </button>
 
             <div

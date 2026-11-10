@@ -6,6 +6,7 @@ import { addMessage, setArtifacts, setIsLoading, setMessages } from '../redux/me
 import { createConversation } from '../features/createConversation'
 import { addConversation, setConvTitle, setSelectedConversation } from '../redux/conversationSlice'
 import { updateConversation } from '../features/updateConversation'
+import { useTheme } from '../context/ThemeContext'
 
 function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
   const [value, setValue] = useState("")
@@ -19,6 +20,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
   const fileRef = useRef(null)
   const textareaRef = useRef(null)
   const dispatch = useDispatch()
+  const { theme } = useTheme()
 
   useEffect(() => {
     if (initialPrompt) {
@@ -189,7 +191,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
 
           <textarea
             ref={textareaRef}
-            placeholder='Message Indus GPT...'
+            placeholder='Ask Indus GPT'
             onChange={handleInputChange}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
@@ -199,8 +201,12 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
             }}
             value={value}
             rows={1}
-            className="w-full bg-transparent outline-none resize-none text-[15px] placeholder:text-purple-300/40 caret-purple-400 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-[180px] pt-1"
-            style={{ color: 'var(--text-user)' }}
+            className={`w-full bg-transparent outline-none resize-none text-[15px] caret-purple-400 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-[180px] pt-1 ${
+              theme === 'dark' ? 'placeholder:text-white' : 'placeholder:text-black'
+            }`}
+            style={{
+              color: theme === 'dark' ? '#FFFFFF' : '#000000'
+            }}
           />
 
           <div className='flex items-center justify-between pt-1 gap-2'>
@@ -220,9 +226,12 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
                 type="button"
                 onClick={() => fileRef.current && fileRef.current.click()}
                 title="Attach files (PDF, image)"
-                className='icon-pop flex items-center justify-center w-8 h-8 rounded-full text-purple-300 hover:text-white hover:bg-purple-600/20 border border-transparent hover:border-purple-400/40 cursor-pointer bg-transparent shrink-0'
+                className='icon-pop flex items-center justify-center w-8 h-8 rounded-full border border-transparent hover:border-purple-400/40 cursor-pointer bg-transparent shrink-0'
+                style={{
+                  color: theme === 'dark' ? '#FFFFFF' : '#000000'
+                }}
               >
-                <Plus size={18} />
+                <Plus size={18} color={theme === 'dark' ? '#FFFFFF' : '#000000'} />
               </button>
 
               <div className='flex items-center gap-1.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-2 px-1 flex-1 min-w-0'>
@@ -236,12 +245,15 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
                       onClick={() => setSelectedAgent(agent.label)}
                       className={`icon-pop flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium cursor-pointer border shrink-0 ${
                         isActive
-                          ? "bg-purple-600/30 border-purple-400/60 text-purple-100 shadow-[0_0_12px_rgba(168,85,247,0.35)]"
-                          : "bg-purple-500/5 border-purple-500/15 text-purple-300/80 hover:bg-purple-600/15 hover:border-purple-400/40 hover:text-purple-100"
+                          ? "bg-purple-600/30 border-purple-400/60 shadow-[0_0_12px_rgba(168,85,247,0.35)]"
+                          : "bg-purple-500/5 border-purple-500/15 hover:bg-purple-600/15 hover:border-purple-400/40"
                       }`}
+                      style={{
+                        color: theme === 'dark' ? '#FFFFFF' : '#000000'
+                      }}
                     >
-                      <Icon size={12} className={isActive ? "text-purple-300" : "text-purple-400/70"} />
-                      <span>{agent.label}</span>
+                      <Icon size={12} color={theme === 'dark' ? '#FFFFFF' : '#000000'} />
+                      <span style={{ color: theme === 'dark' ? '#FFFFFF' : '#000000' }}>{agent.label}</span>
                     </button>
                   )
                 })}
@@ -256,10 +268,13 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
                 className={`icon-pop flex items-center justify-center w-8 h-8 rounded-full cursor-pointer border-none ${
                   listening
                     ? "bg-red-500 text-white animate-pulse shadow-[0_0_14px_rgba(239,68,68,0.6)]"
-                    : "text-purple-300 hover:text-white hover:bg-purple-600/20 bg-transparent"
+                    : "bg-transparent"
                 }`}
+                style={{
+                  color: listening ? '#FFFFFF' : (theme === 'dark' ? '#FFFFFF' : '#000000')
+                }}
               >
-                {listening ? <Mic size={16} /> : <MicOff size={16} />}
+                {listening ? <Mic size={16} /> : <MicOff size={16} color={theme === 'dark' ? '#FFFFFF' : '#000000'} />}
               </button>
 
               <button
@@ -270,10 +285,17 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
                 className={`icon-pop flex items-center justify-center w-8 h-8 rounded-full border-none cursor-pointer ${
                   hasContent && !isLoading
                     ? "btn-fancy-purple text-white shadow-[0_0_16px_rgba(168,85,247,0.5)]"
-                    : "bg-white/[0.08] text-purple-300/40 cursor-not-allowed opacity-50"
+                    : "bg-white/[0.08] cursor-not-allowed opacity-50"
                 }`}
+                style={{
+                  color: theme === 'dark' ? '#FFFFFF' : '#000000'
+                }}
               >
-                <ArrowUp size={16} strokeWidth={2.6} />
+                <ArrowUp
+                  size={16}
+                  strokeWidth={2.6}
+                  color={theme === 'dark' ? '#FFFFFF' : (hasContent && !isLoading ? '#FFFFFF' : '#000000')}
+                />
               </button>
             </div>
           </div>

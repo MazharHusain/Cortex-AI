@@ -8,6 +8,7 @@ import { createConversation } from '../features/createConversation'
 import logOut from '../features/logOut'
 import { setUserdata } from '../redux/userSlice'
 import BillingDrawer from './BillingDrawer'
+import { useTheme } from '../context/ThemeContext'
 
 function SideBar({ onLoginClick, collapsed, setCollapsed }) {
     const dispatch = useDispatch()
@@ -15,6 +16,7 @@ function SideBar({ onLoginClick, collapsed, setCollapsed }) {
     const { conversations, selectedConversation } = useSelector(state => state.conversation)
     const { userData } = useSelector(state => state.user)
     const [showBilling, setShowBilling] = useState(false)
+    const { theme } = useTheme()
 
     useEffect(() => {
         const getConv = async () => {
@@ -41,11 +43,12 @@ function SideBar({ onLoginClick, collapsed, setCollapsed }) {
         return (
             <aside className='hidden lg:flex flex-col items-center w-[58px] h-screen border-r py-3.5 gap-2 shrink-0 select-none z-20 transition-colors' style={{ backgroundColor: 'var(--bg-sidebar)', borderColor: 'var(--border-subtle)' }}>
                 <button
-                    className='icon-pop flex items-center justify-center w-10 h-10 rounded-xl text-purple-400 hover:text-purple-200 hover:bg-purple-600/20 border border-transparent hover:border-purple-400/40 cursor-pointer bg-transparent'
+                    className='icon-pop flex items-center justify-center w-10 h-10 rounded-xl border border-transparent hover:border-purple-400/40 cursor-pointer bg-transparent'
                     onClick={() => setCollapsed(false)}
                     title="Open sidebar"
+                    style={{ color: theme === 'light' ? '#000000' : '#c084fc' }}
                 >
-                    <PanelLeft size={19} />
+                    <PanelLeft size={19} color={theme === 'light' ? '#000000' : '#c084fc'} />
                 </button>
 
                 <button
@@ -53,7 +56,7 @@ function SideBar({ onLoginClick, collapsed, setCollapsed }) {
                     onClick={handleCreateConversation}
                     title="New chat"
                 >
-                    <SquarePen size={18} />
+                    <SquarePen size={18} color="#FFFFFF" />
                 </button>
 
                 <div className='flex-1 w-full overflow-y-auto px-2 space-y-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pt-2'>
@@ -66,11 +69,16 @@ function SideBar({ onLoginClick, collapsed, setCollapsed }) {
                                 title={conv?.title || "New Chat"}
                                 className={`icon-pop w-full flex items-center justify-center h-10 rounded-xl border transition cursor-pointer ${
                                     isActive
-                                        ? "bg-purple-600/25 border-purple-400/50 text-purple-300 shadow-[0_0_12px_rgba(168,85,247,0.3)]"
-                                        : "bg-transparent border-transparent text-purple-400/60 hover:bg-purple-600/10 hover:text-purple-300 hover:border-purple-500/30"
+                                        ? "bg-purple-600/25 border-purple-400/50 shadow-[0_0_12px_rgba(168,85,247,0.3)]"
+                                        : "bg-transparent border-transparent hover:bg-purple-600/10 hover:border-purple-500/30"
                                 }`}
+                                style={{
+                                    color: isActive
+                                        ? (theme === 'light' ? '#000000' : '#d8b4fe')
+                                        : (theme === 'light' ? '#000000' : '#c084fc')
+                                }}
                             >
-                                <MessageSquare size={16} />
+                                <MessageSquare size={16} color={isActive ? (theme === 'light' ? '#000000' : '#d8b4fe') : (theme === 'light' ? '#000000' : '#c084fc')} />
                             </button>
                         )
                     })}
@@ -95,7 +103,7 @@ function SideBar({ onLoginClick, collapsed, setCollapsed }) {
                             title="Log in"
                             className='icon-pop btn-fancy-purple w-9 h-9 rounded-full flex items-center justify-center cursor-pointer border-none'
                         >
-                            <User size={16} />
+                            <User size={16} color="#FFFFFF" />
                         </button>
                     )}
                 </div>
@@ -111,22 +119,24 @@ function SideBar({ onLoginClick, collapsed, setCollapsed }) {
                 <div className='h-14 flex items-center justify-between px-3.5 border-b' style={{ borderColor: 'var(--border-header)' }}>
                     <div className='flex items-center gap-3'>
                         <img src="/logo.png" alt="Indus GPT" className='w-9 h-9 rounded-xl object-contain shadow-sm' />
-                        <span className='font-bold text-[17px] tracking-tight' style={{ color: 'var(--text-heading)' }}>Indus GPT</span>
+                        <span className='font-bold text-[17px] tracking-tight' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>Indus GPT</span>
                     </div>
                     <div className='flex items-center gap-1.5'>
                         <button
                             onClick={handleCreateConversation}
                             title="New chat"
-                            className='icon-pop flex items-center justify-center w-8 h-8 rounded-lg text-purple-400 hover:text-purple-200 hover:bg-purple-600/20 border border-transparent hover:border-purple-400/40 cursor-pointer bg-transparent'
+                            className='icon-pop flex items-center justify-center w-8 h-8 rounded-lg border border-transparent hover:border-purple-400/40 cursor-pointer bg-transparent'
+                            style={{ color: theme === 'light' ? '#000000' : '#c084fc' }}
                         >
-                            <SquarePen size={18} />
+                            <SquarePen size={18} color={theme === 'light' ? '#000000' : '#c084fc'} />
                         </button>
                         <button
                             onClick={() => setCollapsed(true)}
                             title="Close sidebar"
-                            className='icon-pop flex items-center justify-center w-8 h-8 rounded-lg text-purple-400 hover:text-purple-200 hover:bg-purple-600/20 border border-transparent hover:border-purple-400/40 cursor-pointer bg-transparent'
+                            className='icon-pop flex items-center justify-center w-8 h-8 rounded-lg border border-transparent hover:border-purple-400/40 cursor-pointer bg-transparent'
+                            style={{ color: theme === 'light' ? '#000000' : '#c084fc' }}
                         >
-                            <PanelLeft size={18} />
+                            <PanelLeft size={18} color={theme === 'light' ? '#000000' : '#c084fc'} />
                         </button>
                     </div>
                 </div>
@@ -136,13 +146,16 @@ function SideBar({ onLoginClick, collapsed, setCollapsed }) {
                         onClick={handleCreateConversation}
                         className='icon-pop btn-fancy-purple w-full flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-2xl text-sm font-semibold cursor-pointer border-none shadow-[0_0_18px_rgba(168,85,247,0.35)]'
                     >
-                        <Plus size={17} strokeWidth={2.4} />
+                        <Plus size={17} strokeWidth={2.4} color="#FFFFFF" />
                         <span>New chat</span>
                     </button>
                 </div>
 
                 <div className='flex-1 overflow-y-auto px-3 py-3 space-y-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
-                    <div className='text-[11px] font-semibold text-purple-400/70 uppercase tracking-wider px-2 py-1'>
+                    <div
+                        className='text-[11px] font-bold uppercase tracking-wider px-2 py-1'
+                        style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}
+                    >
                         Recent chats
                     </div>
 
@@ -158,15 +171,26 @@ function SideBar({ onLoginClick, collapsed, setCollapsed }) {
                                             ? "bg-purple-600/25 border-purple-400/50 shadow-[0_0_12px_rgba(168,85,247,0.25)]"
                                             : "border-transparent hover:bg-purple-600/10 hover:border-purple-500/30"
                                     }`}
-                                    style={{ color: isActive ? 'var(--text-heading)' : 'var(--text-main)' }}
+                                    style={{
+                                        color: isActive
+                                            ? (theme === 'light' ? '#000000' : '#FFFFFF')
+                                            : (theme === 'light' ? '#000000' : '#e2e8f0'),
+                                        fontWeight: isActive ? '600' : '500'
+                                    }}
                                 >
-                                    <MessageSquare size={15} className={`shrink-0 ${isActive ? "text-purple-300" : "text-purple-400/60 group-hover:text-purple-300"}`} />
+                                    <MessageSquare
+                                        size={15}
+                                        className='shrink-0'
+                                        color={isActive ? (theme === 'light' ? '#000000' : '#d8b4fe') : (theme === 'light' ? '#000000' : '#c084fc')}
+                                    />
                                     <span className='truncate flex-1'>{conv?.title || "New Chat"}</span>
                                 </div>
                             )
                         })
                     ) : (
-                        <p className='text-xs px-3 py-4 text-center' style={{ color: 'var(--text-muted)' }}>No chats yet. Start a new conversation!</p>
+                        <p className='text-xs px-3 py-4 text-center' style={{ color: theme === 'light' ? '#000000' : 'var(--text-muted)' }}>
+                            No chats yet. Start a new conversation!
+                        </p>
                     )}
                 </div>
 
@@ -175,13 +199,24 @@ function SideBar({ onLoginClick, collapsed, setCollapsed }) {
                         <>
                             <button
                                 onClick={() => setShowBilling(true)}
-                                className='icon-pop w-full flex items-center justify-between px-3.5 py-2 rounded-xl bg-purple-500/15 border border-purple-500/30 hover:border-purple-400/60 text-xs font-semibold text-purple-300 transition cursor-pointer shadow-[0_0_14px_rgba(168,85,247,0.2)]'
+                                className='icon-pop w-full flex items-center justify-between px-3.5 py-2 rounded-xl bg-purple-500/15 border border-purple-500/30 hover:border-purple-400/60 text-xs font-semibold transition cursor-pointer shadow-[0_0_14px_rgba(168,85,247,0.2)]'
+                                style={{
+                                    color: theme === 'light' ? '#000000' : '#d8b4fe'
+                                }}
                             >
                                 <div className='flex items-center gap-2'>
-                                    <Sparkles size={14} className='text-purple-400' />
-                                    <span>Upgrade Plan</span>
+                                    <Sparkles size={14} color={theme === 'light' ? '#000000' : '#c084fc'} />
+                                    <span style={{ color: theme === 'light' ? '#000000' : '#d8b4fe', fontWeight: theme === 'light' ? '700' : '600' }}>
+                                        Upgrade Plan
+                                    </span>
                                 </div>
-                                <span className='text-[11px] bg-purple-500/30 border border-purple-400/30 px-2 py-0.5 rounded-full text-purple-300'>
+                                <span
+                                    className='text-[11px] bg-purple-500/30 border border-purple-400/30 px-2 py-0.5 rounded-full'
+                                    style={{
+                                        color: theme === 'light' ? '#000000' : '#d8b4fe',
+                                        fontWeight: theme === 'light' ? '700' : '500'
+                                    }}
+                                >
                                     {userData.credits ?? 100} credits
                                 </span>
                             </button>
@@ -199,8 +234,8 @@ function SideBar({ onLoginClick, collapsed, setCollapsed }) {
                                         )}
                                     </div>
                                     <div className='min-w-0 flex-1'>
-                                        <p className='text-xs font-semibold truncate' style={{ color: 'var(--text-heading)' }}>{userData.name || "User"}</p>
-                                        <p className='text-[10px] text-purple-400 capitalize'>{userData.plan || "Free plan"}</p>
+                                        <p className='text-xs font-semibold truncate' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>{userData.name || "User"}</p>
+                                        <p className='text-[10px] capitalize' style={{ color: theme === 'light' ? '#000000' : '#c084fc' }}>{userData.plan || "Free plan"}</p>
                                     </div>
                                 </div>
 
