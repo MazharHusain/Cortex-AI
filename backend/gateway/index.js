@@ -4,16 +4,31 @@ import proxy from "express-http-proxy"
 dotenv.config()
 import cors from "cors"
 import cookieParser from "cookie-parser"
+import mongoose from "mongoose"
 import { getCurrentUser } from "./controllers/user.controller.js"
 import protect from "./middleware/auth.middleware.js"
 import { proxyWithHeader } from "./utils/proxyWithHeader.js"
 import morgan from "morgan"
+import billingRouter from "./billing/routes/billing.route.js"
+import { guestChatGate, optionalAuth } from "./middleware/guest.middleware.js"
 const port =process.env.PORT
 
 const app=express()
+
+const connectDb = async () => {
+    try {
+        if (process.env.MONGODB_URI) {
+            await mongoose.connect(process.env.MONGODB_URI)
+            console.log("gateway db connected")
+        }
+    } catch (error) {
+        console.log(`gateway db error ${error}`)
+    }
+}
+connectDb()
+
 app.use(cors({
     origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps or curl) or any vercel.app or local dev
         if (!origin || origin.includes("vercel.app") || origin.includes("localhost") || origin === process.env.FRONTEND_URL) {
             callback(null, true)
         } else {
@@ -24,13 +39,16 @@ app.use(cors({
 }))
 app.use(morgan("dev"))
 app.use(cookieParser())
+
 app.use("/api/auth",proxy(process.env.AUTH_SERVICE))
 app.use("/api/chat",protect,proxyWithHeader(process.env.CHAT_SERVICE))
-app.use("/api/agent",protect,proxyWithHeader(process.env.AGENT_SERVICE))
-app.use("/api/billing",protect,proxyWithHeader(process.env.BILLING_SERVICE))
+app.use("/api/agent", optionalAuth, guestChatGate, proxyWithHeader(process.env.AGENT_SERVICE))
+
+app.use("/api/billing", protect, express.json(), billingRouter)
+
 app.get("/api/me",protect,getCurrentUser)
 app.get("/",(req,res)=>{
-    res.json({message:"hello from gateway v5"})
+    res.json({message:"hello from gateway v6"})
 })
 
 app.listen(port,()=>{

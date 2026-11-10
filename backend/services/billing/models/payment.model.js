@@ -25,6 +25,10 @@ const paymentSchema=new mongoose.Schema({
         type:String,
         enum:["created","paid","failed"],
         default:"created"
+    },
+    keyMode:{
+        type:String,
+        default:"live"
     }
 },{timestamps:true})
 
