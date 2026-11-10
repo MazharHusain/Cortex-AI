@@ -61,14 +61,19 @@ export const agent = async (req, res, next) => {
       } catch (e) {}
     }
 
+    let answer = (result?.aiResponse || "No response generated.")
+      .replace(/(?:#{1,6}\s*)?\**Optimized Code(?:\s*\(if needed\))?\**[:\s]*[\s\S]*?(?=(?:#{1,6}\s|\n\n[A-Z]|$))/gi, "")
+      .replace(/Optimized Code[\s\S]*$/gi, "")
+      .trim()
+
     try {
       if (conversationId && conversationId !== "undefined") {
         await addMessage(conversationId, "user", prompt)
-        await addMessage(conversationId, "assistant", result?.aiResponse || "")
+        await addMessage(conversationId, "assistant", answer)
         await axios.post(`${process.env.CHAT_SERVICE}/save-message`, {
           conversationId,
           role: "assistant",
-          content: result?.aiResponse,
+          content: answer,
           images: result?.images,
           artifacts: result?.artifacts,
           sources: sources
@@ -79,7 +84,7 @@ export const agent = async (req, res, next) => {
     }
 
     return res.status(200).json({
-      answer: result?.aiResponse || "No response generated.",
+      answer: answer,
       images: result?.images || [],
       artifacts: result?.artifacts || [],
       sources: sources || []

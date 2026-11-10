@@ -42,6 +42,10 @@
   opacity: 1 !important;
 }
 
+textarea, input {
+  spellcheck: false;
+}
+
 ::selection {
   background-color: rgba(168, 85, 247, 0.45);
   color: #ffffff;

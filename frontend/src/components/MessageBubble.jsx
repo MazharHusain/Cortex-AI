@@ -73,9 +73,8 @@ function MessageBubble({ role, content, images, sources }) {
   const cleanContent = useMemo(() => {
     if (!content) return ""
     return content
-      .replace(/##\s*Optimized Code\s*(\(if needed\))?[\s\S]*?(?=(##|$))/gi, "")
-      .replace(/###\s*Optimized Code\s*(\(if needed\))?[\s\S]*?(?=(###|##|$))/gi, "")
-      .replace(/\*\*Optimized Code[\s\S]*?(?=(\*\*|$))/gi, "")
+      .replace(/(?:#{1,6}\s*)?\**Optimized Code(?:\s*\(if needed\))?\**[:\s]*[\s\S]*?(?=(?:#{1,6}\s|\n\n[A-Z]|$))/gi, "")
+      .replace(/Optimized Code[\s\S]*$/gi, "")
       .trim()
   }, [content])
 

@@ -71,8 +71,8 @@ LANGUAGE MATCHING (Strict Requirement):
 
 CONTENT & FORMATTING:
 - Answer directly and helpfully without rigid boilerplate templates.
-- NEVER include headings like "## Optimized Code (if needed)", "Problems", "Improvements", "Best Practices", or "N/A" disclaimers unless explicitly requested.
 - For biographies, general questions, or explanations, provide an engaging, well-structured, and accurate response.
+- Do NOT output any code blocks, code sections, or technical disclaimers unless the user explicitly requested code.
 - Use clean Markdown with bullet points, numbered lists, or bold text where helpful.
 - Keep paragraphs readable and concise.`
 
@@ -94,9 +94,14 @@ CONTENT & FORMATTING:
     const response = await llm.invoke(messages)
     await deductCredits(state.userId, "chat")
 
+    let cleanResponse = (response.content || "")
+      .replace(/(?:#{1,6}\s*)?\**Optimized Code(?:\s*\(if needed\))?\**[:\s]*[\s\S]*?(?=(?:#{1,6}\s|\n\n[A-Z]|$))/gi, "")
+      .replace(/Optimized Code[\s\S]*$/gi, "")
+      .trim()
+
     return {
       ...state,
-      aiResponse: response.content,
+      aiResponse: cleanResponse,
       sources
     }
   } catch (error) {

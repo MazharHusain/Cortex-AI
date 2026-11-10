@@ -23,6 +23,15 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
   const { theme } = useTheme()
 
   useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.setAttribute("spellcheck", "false")
+      textareaRef.current.setAttribute("autocorrect", "off")
+      textareaRef.current.setAttribute("autocapitalize", "off")
+      textareaRef.current.spellcheck = false
+    }
+  }, [])
+
+  useEffect(() => {
     if (initialPrompt) {
       setValue(initialPrompt)
       if (textareaRef.current) {
@@ -110,7 +119,11 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
     }
 
     let effectiveAgent = selectedAgent.toLowerCase()
-    if (effectiveAgent === "auto") {
+    const isSearchQuery = /who is|what is|kon hai|kya hai|latest|news|weather|price|ceo|founder|history|biography|when was|where is|tell me about|search/i.test(trimmedVal)
+
+    if (effectiveAgent === "search" || isSearchQuery) {
+      effectiveAgent = "search"
+    } else if (effectiveAgent === "auto") {
       if (selectedModel === "coding") {
         effectiveAgent = "coding"
       } else if (selectedModel === "reasoning") {

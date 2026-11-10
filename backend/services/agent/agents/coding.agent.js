@@ -2,16 +2,14 @@ import { checkAgentLimit } from "../config/agentLimit.js"
 import { getModel } from "../config/llmModels.js"
 import { deductCredits } from "../utils/deductCredits.js"
 
-export const codingAgent=async (state) => {
-try {
-   await checkAgentLimit(state.userId,"coding")
-   const intentLlm=await getModel("intent")
-   const llm=await getModel("coding")
-   const intentRes=await intentLlm.invoke(`
-    You are an intent classifier.
+export const codingAgent = async (state) => {
+  try {
+    await checkAgentLimit(state.userId, "coding")
+    const intentLlm = await getModel("intent")
+    const llm = await getModel("coding")
+    const intentRes = await intentLlm.invoke(`You are an intent classifier.
 
-Return ONLY one of these values.
-
+Return ONLY one of these values:
 CODE_GENERATION
 CODE_REVIEW
 CODE_EXPLANATION
@@ -21,12 +19,12 @@ CONVERSION
 DOCUMENTATION
 
 User Request:
-${state.prompt}
-    `)
-    const intent=intentRes.content
-    if(intent=="CODE_GENERATION"){
-        const prompt=`
-        You are Indus GPT Coding Agent.
+${state.prompt}`)
+
+    const intent = intentRes.content.trim()
+
+    if (intent === "CODE_GENERATION") {
+      const prompt = `You are Indus GPT Coding Agent.
 
 Generate the requested project.
 
@@ -38,7 +36,6 @@ Default stack:
 Use React / Next.js / Vue ONLY if explicitly requested.
 
 Rules:
-
 - Responsive
 - Modern UI
 - CSS Variables
@@ -48,17 +45,11 @@ Rules:
 - Beautiful spacing
 - Single page unless user asks otherwise.
 
-IMAGES
-=========================
-
 Always use real Unsplash images.
-
 Never use placeholders.
-
 Return ONLY valid JSON.
 
 Schema:
-
 {
   "files":[
     {
@@ -76,36 +67,27 @@ Schema:
   ]
 }
 
-Rules:
-
-- Output must start with {
-- Output must end with }
-- No markdown
-- No explanation
-- No extra text
-- No \`\`\`
-- Never mention intent
+Output must start with { and end with }. No markdown, no explanation, no backticks.
 
 User Request:
-${state.prompt}
-        ` 
-        const res=await llm.invoke(prompt)
-        console.log(res)
-        const data=JSON.parse(res.content)
-        await deductCredits(state.userId,"coding")
-        
-        return {
-            ...state,
-            aiResponse:"Code Generated Successfully.",
-            artifacts:[
-                {
-                    id:Date.now(),
-                    type:"Project",
-                    files:data.files || [],
-                    title:state.prompt
-                }
-            ]
-        }
+${state.prompt}`
+
+      const res = await llm.invoke(prompt)
+      const data = JSON.parse(res.content)
+      await deductCredits(state.userId, "coding")
+
+      return {
+        ...state,
+        aiResponse: "Code Generated Successfully.",
+        artifacts: [
+          {
+            id: Date.now(),
+            type: "Project",
+            files: data.files || [],
+            title: state.prompt
+          }
+        ]
+      }
     }
 
     const res = await llm.invoke(`You are Indus GPT, an advanced AI assistant.
@@ -119,28 +101,30 @@ You MUST reply in the EXACT SAME language that the user used.
 
 CRITICAL CONTENT RULE:
 - Answer the user's question directly, clearly, and concisely in clean Markdown.
-- NEVER output sections like "Optimized Code (if needed): N/A" or boilerplate headings like "Problems", "Improvements" unless the user explicitly requested code optimization, debugging, or code review.
-- If the user asked a general knowledge, biographical, or non-coding question, answer it directly and naturally without any coding template.
+- For non-coding or general knowledge questions, answer directly and naturally without code blocks, templates, or technical disclaimers.
+- Do NOT output any boilerplate templates, empty code blocks, or N/A disclaimers.
 
 User Intent: ${intent}
-User Request: ${state.prompt}
-    `)
+User Request: ${state.prompt}`)
 
-   const data=res.content   
-   await deductCredits(state.userId,"coding")
-   
-   return {
-    ...state,
-    aiResponse:data,
-    artifacts:[]
-   }  
-} catch (error) {
-   console.log(error)
-         return {
-            ...state,
-            aiResponse:error?.data?.message || "failed to generate code",
-            artifacts:[]
-        }
-}
-  
+    const cleanData = (res.content || "")
+      .replace(/(?:#{1,6}\s*)?\**Optimized Code(?:\s*\(if needed\))?\**[:\s]*[\s\S]*?(?=(?:#{1,6}\s|\n\n[A-Z]|$))/gi, "")
+      .replace(/Optimized Code[\s\S]*$/gi, "")
+      .trim()
+
+    await deductCredits(state.userId, "coding")
+
+    return {
+      ...state,
+      aiResponse: cleanData,
+      artifacts: []
+    }
+  } catch (error) {
+    console.log(error)
+    return {
+      ...state,
+      aiResponse: error?.data?.message || "failed to generate code",
+      artifacts: []
+    }
+  }
 }
