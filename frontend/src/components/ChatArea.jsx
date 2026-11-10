@@ -27,7 +27,7 @@ function ChatArea({ onLoginClick, onToggleSidebar }) {
   }, [selectedConversation?._id])
 
   return (
-    <div className='flex-1 flex flex-col min-w-0 h-screen transition-colors' style={{ backgroundColor: 'var(--bg-main)' }}>
+    <div className='flex-1 flex flex-col min-w-0 h-full transition-colors' style={{ backgroundColor: 'var(--bg-main)' }}>
       <Nav
         onToggleSidebar={onToggleSidebar}
         onLoginClick={onLoginClick}

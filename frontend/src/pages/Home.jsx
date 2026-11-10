@@ -63,7 +63,7 @@ function Home() {
     }
 
     return (
-        <div className='h-screen flex overflow-hidden font-sans transition-colors' style={{ backgroundColor: 'var(--bg-main)', color: 'var(--text-main)' }}>
+        <div className='h-screen h-[100dvh] flex overflow-hidden font-sans transition-colors' style={{ backgroundColor: 'var(--bg-main)', color: 'var(--text-main)' }}>
             <SideBar
                 onLoginClick={() => setShowLoginModal(true)}
                 collapsed={sidebarCollapsed}

@@ -48,23 +48,23 @@ function MessageList({ onSelectPrompt }) {
   ]
 
   return (
-    <div className='flex-1 overflow-y-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors' style={{ backgroundColor: 'var(--bg-main)' }}>
+    <div className='flex-1 overflow-y-auto px-3 sm:px-4 md:px-6 py-2 sm:py-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors' style={{ backgroundColor: 'var(--bg-main)' }}>
       {messages.length === 0 || !selectedConversation ? (
-        <div className="h-full flex flex-col items-center justify-center max-w-2xl mx-auto px-3 sm:px-4 text-center my-auto">
-          <div className='relative mb-4 sm:mb-5 flex flex-col items-center'>
-            <div className='w-16 h-16 sm:w-24 sm:h-24 flex items-center justify-center bg-transparent border-none shadow-none' style={{ background: 'transparent' }}>
+        <div className="min-h-full flex flex-col items-center justify-start sm:justify-center max-w-2xl mx-auto px-3 sm:px-4 text-center pt-2 sm:pt-0 pb-4">
+          <div className='relative mb-2 sm:mb-4 flex flex-col items-center'>
+            <div className='w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center bg-transparent border-none shadow-none' style={{ background: 'transparent' }}>
               <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' style={{ background: 'transparent', filter: 'none' }} />
             </div>
           </div>
 
-          <h1 className='text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight mb-2' style={{ color: theme === 'light' ? '#000000' : 'var(--text-heading)' }}>
+          <h1 className='text-2xl sm:text-2xl md:text-3xl font-semibold tracking-tight mb-1.5 sm:mb-2' style={{ color: theme === 'light' ? '#000000' : 'var(--text-heading)' }}>
             What can I help with today?
           </h1>
-          <p className='text-xs sm:text-sm max-w-md mb-6 sm:mb-8 leading-relaxed' style={{ color: theme === 'light' ? '#334155' : 'var(--text-muted)' }}>
+          <p className='text-xs sm:text-sm max-w-md mb-4 sm:mb-8 leading-relaxed' style={{ color: theme === 'light' ? '#334155' : 'var(--text-muted)' }}>
             Ask me anything — code, reasoning, analysis, documents, or create presentations with Indus GPT.
           </p>
 
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 w-full text-left'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 w-full text-left'>
             {suggestions.map((item, i) => {
               const Icon = item.icon
               return (
