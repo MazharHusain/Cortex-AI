@@ -124,14 +124,14 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
             new Promise(res => setTimeout(() => res(null), 2500))
           ])
           if (conv && conv._id) {
-            dispatch(setSelectedConversation(conv))
-            dispatch(addConversation(conv))
-            conversation = conv
+            const titledConv = { ...conv, title: promptText.slice(0, 40) }
+            dispatch(setSelectedConversation(titledConv))
+            dispatch(addConversation(titledConv))
+            conversation = titledConv
+            updateConversation({ id: conv._id, title: promptText }).catch(() => {})
           }
         } catch (_) {}
-      }
-
-      if (userData && conversation?.title === "New Chat") {
+      } else if (userData && conversation?.title === "New Chat") {
         updateConversation({ id: conversation?._id, title: promptText }).catch(() => {})
         dispatch(setConvTitle({ conversationId: conversation?._id, title: promptText.slice(0, 40) }))
       }

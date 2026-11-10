@@ -16,6 +16,7 @@ function SideBar({ onLoginClick, collapsed, setCollapsed, mobileOpen, setMobileO
     const { conversations, selectedConversation } = useSelector(state => state.conversation)
     const { userData } = useSelector(state => state.user)
     const [showBilling, setShowBilling] = useState(false)
+    const { messages } = useSelector(state => state.message)
     const { theme } = useTheme()
 
     useEffect(() => {
@@ -25,7 +26,9 @@ function SideBar({ onLoginClick, collapsed, setCollapsed, mobileOpen, setMobileO
     useEffect(() => {
         const getConv = async () => {
             const data = await getConversations()
-            dispatch(setConversations(data || []))
+            // Gemini/ChatGPT style: don't show empty "New Chat" in recent list
+            const valid = (data || []).filter(c => c && c.title && c.title !== "New Chat")
+            dispatch(setConversations(valid))
         }
         if (userData?._id) {
             getConv()
@@ -33,14 +36,15 @@ function SideBar({ onLoginClick, collapsed, setCollapsed, mobileOpen, setMobileO
     }, [userData?._id])
 
     const handleCreateConversation = async () => {
-        dispatch(setMessages([]))
-        const data = await createConversation()
-        if (data && data._id) {
-            dispatch(addConversation(data))
-            dispatch(setSelectedConversation(data))
-        } else {
+        // If current window is already a fresh new chat with no messages, don't create duplicate
+        if (!selectedConversation || messages.length === 0 || selectedConversation.title === "New Chat") {
+            dispatch(setMessages([]))
             dispatch(setSelectedConversation(null))
+            if (setMobileOpen) setMobileOpen(false)
+            return
         }
+        dispatch(setMessages([]))
+        dispatch(setSelectedConversation(null))
         if (setMobileOpen) setMobileOpen(false)
     }
 

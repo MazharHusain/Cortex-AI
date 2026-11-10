@@ -13,6 +13,7 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
   const { theme, toggleTheme } = useTheme()
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false)
   const [avatarError, setAvatarError] = useState(false)
+  const { messages } = useSelector(state => state.message)
   const dropdownRef = useRef(null)
 
   useEffect(() => {
@@ -57,14 +58,14 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
   }, [])
 
   const handleNewChat = async () => {
-    dispatch(setMessages([]))
-    const conv = await createConversation()
-    if (conv && conv._id) {
-      dispatch(setSelectedConversation(conv))
-      dispatch(addConversation(conv))
-    } else {
+    // If current chat is already empty/new, keep the same window like Gemini
+    if (!selectedConversation || messages?.length === 0 || selectedConversation.title === "New Chat") {
+      dispatch(setMessages([]))
       dispatch(setSelectedConversation(null))
+      return
     }
+    dispatch(setMessages([]))
+    dispatch(setSelectedConversation(null))
   }
 
   return (
