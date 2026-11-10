@@ -44,11 +44,25 @@ export const agent = async (req, res, next) => {
             console.error("Non-blocking warning: Failed to save assistant message:", chatErr.message)
         }
 
-        // 4. Return successful AI response to frontend
+        let sources = []
+        if (Array.isArray(result?.sources) && result.sources.length > 0) {
+            sources = result.sources
+        } else if (result?.searchResults) {
+            try {
+                const sr = typeof result.searchResults === 'string' ? JSON.parse(result.searchResults) : result.searchResults
+                if (Array.isArray(sr?.results)) {
+                    sources = sr.results.map(r => ({ title: r.title, url: r.url })).filter(s => s.url)
+                } else if (Array.isArray(sr)) {
+                    sources = sr.map(r => ({ title: r.title, url: r.url })).filter(s => s.url)
+                }
+            } catch (e) {}
+        }
+
         return res.status(200).json({
             answer: result?.aiResponse || "No response generated.",
             images: result?.images || [],
-            artifacts: result?.artifacts || []
+            artifacts: result?.artifacts || [],
+            sources: sources || []
         })
 
     } catch (error) {

@@ -138,7 +138,8 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
       dispatch(addMessage({
         role: "assistant",
         content: data.answer || "No response generated.",
-        images: data.images || []
+        images: data.images || [],
+        sources: data.sources || []
       }))
     } else {
       dispatch(addMessage({

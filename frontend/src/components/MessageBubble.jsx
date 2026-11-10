@@ -5,7 +5,7 @@ import remarkGfm from 'remark-gfm'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
-function MessageBubble({ role, content, images }) {
+function MessageBubble({ role, content, images, sources }) {
   const isUser = role === "user"
   const [lightBox, setLightBox] = useState(null)
   const [copiedCode, setCopiedCode] = useState("")
@@ -206,6 +206,34 @@ function MessageBubble({ role, content, images }) {
         >
           {content}
         </Markdown>
+
+        {sources && sources.length > 0 && (
+          <div className='flex flex-wrap items-center gap-1.5 pt-2 select-none'>
+            <span className='text-[10px] font-semibold uppercase tracking-wider text-purple-400 mr-0.5'>Sources:</span>
+            {sources.slice(0, 4).map((src, idx) => {
+              let domain = ""
+              try {
+                domain = new URL(src.url || src).hostname.replace('www.', '')
+              } catch (e) {
+                domain = "source"
+              }
+              return (
+                <a
+                  key={idx}
+                  href={src.url || src}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className='inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] border border-purple-500/25 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 transition-colors'
+                  style={{ textDecoration: 'none' }}
+                >
+                  <span className='w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0'></span>
+                  <span className='max-w-[130px] truncate'>{src.title || domain}</span>
+                  <ExternalLink size={10} className='opacity-70 shrink-0' />
+                </a>
+              )
+            })}
+          </div>
+        )}
 
         <div className='flex items-center gap-2 pt-1 opacity-0 group-hover:opacity-100 transition-opacity'>
           <button

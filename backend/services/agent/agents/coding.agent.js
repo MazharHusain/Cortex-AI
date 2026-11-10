@@ -108,33 +108,23 @@ ${state.prompt}
         }
     }
 
-    const res=await llm.invoke(`
-        The user's request is:
+    const res = await llm.invoke(`You are Indus GPT, an advanced AI assistant.
 
-${intent}
+CRITICAL LANGUAGE RULE:
+You MUST reply in the EXACT SAME language that the user used.
+- If the user asks in Hinglish (e.g. "Elon Musk kon hai?"), reply in natural, fluent Hinglish.
+- If the user asks in Hindi, reply in Hindi.
+- If the user asks in English, reply in English.
+- NEVER translate the user's question back to them.
 
-Return Markdown only.
+CRITICAL CONTENT RULE:
+- Answer the user's question directly, clearly, and concisely in clean Markdown.
+- NEVER output sections like "Optimized Code (if needed): N/A" or boilerplate headings like "Problems", "Improvements" unless the user explicitly requested code optimization, debugging, or code review.
+- If the user asked a general knowledge, biographical, or non-coding question, answer it directly and naturally without any coding template.
 
-Never generate project files.
-
-Use headings like:
-
-# Overview
-
-## Explanation
-
-## Problems
-
-## Improvements
-
-## Best Practices
-
-## Optimized Code (if needed)
-
-User Request:
-
-${state.prompt}
-        `)
+User Intent: ${intent}
+User Request: ${state.prompt}
+    `)
 
    const data=res.content   
    await deductCredits(state.userId,"coding")
