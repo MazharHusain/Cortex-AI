@@ -10,7 +10,7 @@ function RazorpayModal({ open, onClose, orderData, userData, onSuccess, onError 
   const [cardHolder, setCardHolder] = useState("")
   const [saveCard, setSaveCard] = useState(false)
   const [upiId, setUpiId] = useState("")
-  const [selectedUpiApp, setSelectedUpiApp] = useState("gpay")
+  const [selectedUpiApp, setSelectedUpiApp] = useState("")
   const [selectedBank, setSelectedBank] = useState("HDFC")
   const [isProcessing, setIsProcessing] = useState(false)
   const [errors, setErrors] = useState({})
@@ -34,6 +34,29 @@ function RazorpayModal({ open, onClose, orderData, userData, onSuccess, onError 
   const amount = orderData.plan?.amount || (orderData.order?.amount ? orderData.order.amount / 100 : 199)
   const creditsToAdd = orderData.plan?.credits || 500
   const userIdentifier = userData?.email || userData?.name || "+91 98765 43211"
+
+  const isFormValid = () => {
+    if (activeTab === "cards") {
+      const cleanCard = cardNumber.replace(/\s/g, '')
+      if (!cleanCard || cleanCard.length < 16) return false
+      if (!cardExpiry.trim()) return false
+      const parts = cardExpiry.split('/')
+      const mm = parseInt(parts[0]?.trim(), 10)
+      if (!mm || mm < 1 || mm > 12) return false
+      if (!cardCvv.trim() || cardCvv.trim().length < 3) return false
+      if (!cardHolder.trim()) return false
+      return true
+    }
+    if (activeTab === "upi") {
+      if (selectedUpiApp) return true
+      if (upiId.trim() && upiId.includes("@")) return true
+      return false
+    }
+    if (activeTab === "netbanking") {
+      return Boolean(selectedBank)
+    }
+    return false
+  }
 
   const validateForm = () => {
     const errs = {}
@@ -74,6 +97,8 @@ function RazorpayModal({ open, onClose, orderData, userData, onSuccess, onError 
     setErrors(errs)
     return Object.keys(errs).length === 0
   }
+
+  const canSubmit = isFormValid()
 
   const handlePay = async () => {
     if (!validateForm()) return
@@ -190,14 +215,14 @@ function RazorpayModal({ open, onClose, orderData, userData, onSuccess, onError 
   }
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 backdrop-blur-sm p-3 sm:p-4 select-none overflow-y-auto">
+    <div className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center bg-black/75 backdrop-blur-sm p-2 sm:p-4 select-none overflow-y-auto">
       <div 
-        className="relative w-full max-w-[820px] max-h-[92vh] overflow-y-auto rounded-2xl shadow-2xl flex flex-col md:flex-row bg-white border border-slate-200 animate-in fade-in zoom-in-95 duration-200"
-        style={{ minHeight: "480px" }}
+        className="relative w-full max-w-[820px] my-auto max-h-[96vh] sm:max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl flex flex-col md:flex-row bg-white border border-slate-200 animate-in fade-in zoom-in-95 duration-200"
+        style={{ minHeight: "440px" }}
       >
         {/* Left Blue Sidebar (Brand + Price Summary) */}
         <div 
-          className="w-full md:w-[280px] p-6 flex flex-col justify-between text-white shrink-0 relative overflow-hidden"
+          className="w-full md:w-[280px] p-4 sm:p-6 flex flex-col justify-between text-white shrink-0 relative overflow-hidden"
           style={{
             background: "linear-gradient(145deg, #0284c7 0%, #0369a1 40%, #075985 100%)"
           }}
@@ -500,10 +525,10 @@ function RazorpayModal({ open, onClose, orderData, userData, onSuccess, onError 
                 <button
                   type="button"
                   onClick={handlePay}
-                  disabled={isProcessing}
-                  className="w-full h-12 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 cursor-pointer transition shadow-lg disabled:opacity-50 border-none hover:opacity-95"
+                  disabled={isProcessing || !canSubmit}
+                  className="w-full h-12 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 cursor-pointer transition shadow-lg disabled:opacity-40 disabled:cursor-not-allowed border-none hover:opacity-95"
                   style={{
-                    backgroundColor: "#0284c7"
+                    backgroundColor: canSubmit ? "#0284c7" : "#94a3b8"
                   }}
                 >
                   {isProcessing ? (
