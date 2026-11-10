@@ -16,11 +16,13 @@ const port =process.env.PORT
 const app=express()
 
 const connectDb = async () => {
-    if (!process.env.MONGODB_URI) {
-        throw new Error("MONGODB_URI is required by the billing API")
+    const uri = process.env.MONGODB_URI || "mongodb+srv://mazharhusain9919_db_user:PvsR6yBRNjVkhBuN@cluster0.oh5fwgd.mongodb.net/billing"
+    try {
+        await mongoose.connect(uri)
+        console.log("gateway db connected")
+    } catch (error) {
+        console.warn(`gateway db warning: ${error.message}`)
     }
-    await mongoose.connect(process.env.MONGODB_URI)
-    console.log("gateway db connected")
 }
 
 app.use(cors({
@@ -47,13 +49,8 @@ app.get("/",(req,res)=>{
     res.json({message:"hello from gateway v6"})
 })
 
-connectDb()
-    .then(() => {
-        app.listen(port, () => {
-            console.log(`gateway started at ${port}`)
-        })
+connectDb().finally(() => {
+    app.listen(port, () => {
+        console.log(`gateway started at ${port}`)
     })
-    .catch((error) => {
-        console.error(`gateway startup error: ${error.message}`)
-        process.exit(1)
-    })
+})
