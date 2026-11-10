@@ -31,11 +31,11 @@ function MessageBubble({ role, content, images }) {
     return (
       <div className='flex justify-end w-full'>
         <div
-          className='max-w-[85%] md:max-w-[70%] border px-5 py-3 rounded-[24px] rounded-br-md text-[15px] leading-relaxed break-words shadow-[0_0_15px_rgba(168,85,247,0.18)] transition-colors'
+          className='max-w-[85%] md:max-w-[70%] border px-5 py-3 rounded-[24px] rounded-br-md text-[15px] leading-relaxed break-words shadow-[0_0_16px_rgba(168,85,247,0.35)] transition-colors'
           style={{
-            backgroundColor: '#ffffff',
-            borderColor: 'rgba(168, 85, 247, 0.35)',
-            color: '#7e22ce'
+            background: 'linear-gradient(135deg, #9333ea 0%, #7e22ce 50%, #6366f1 100%)',
+            borderColor: 'rgba(168, 85, 247, 0.4)',
+            color: '#FFFFFF'
           }}
         >
           {images && images.length > 0 && (
@@ -47,19 +47,14 @@ function MessageBubble({ role, content, images }) {
                   onClick={() => setLightBox(img)}
                   loading="lazy"
                   alt="Upload"
-                  className="w-36 h-24 rounded-xl object-cover border border-purple-400/30 cursor-zoom-in hover:opacity-90 transition"
+                  className="w-36 h-24 rounded-xl object-cover border border-white/20 cursor-zoom-in hover:opacity-90 transition"
                 />
               ))}
             </div>
           )}
           <p
-            className='whitespace-pre-wrap font-semibold tracking-wide'
-            style={{
-              background: 'linear-gradient(135deg, #7e22ce 0%, #4338ca 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              color: '#7e22ce'
-            }}
+            className='whitespace-pre-wrap font-medium tracking-wide text-white'
+            style={{ color: '#FFFFFF' }}
           >
             {content}
           </p>

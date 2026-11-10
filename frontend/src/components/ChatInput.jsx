@@ -11,7 +11,7 @@ import { useTheme } from '../context/ThemeContext'
 function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
   const [value, setValue] = useState("")
   const [selectedAgent, setSelectedAgent] = useState("Auto")
-  const { selectedConversation } = useSelector(state => state.conversation)
+  const { selectedConversation, selectedModel } = useSelector(state => state.conversation)
   const { isLoading } = useSelector(state => state.message)
   const { userData } = useSelector(state => state.user)
   const [selectedFile, setSelectedFile] = useState(null)
@@ -108,7 +108,18 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
     if (conversation?._id) {
       formData.append("conversationId", conversation._id)
     }
-    formData.append("agent", selectedAgent.toLowerCase())
+
+    let effectiveAgent = selectedAgent.toLowerCase()
+    if (effectiveAgent === "auto") {
+      if (selectedModel === "coding") {
+        effectiveAgent = "coding"
+      } else if (selectedModel === "reasoning") {
+        effectiveAgent = "search"
+      } else {
+        effectiveAgent = "chat"
+      }
+    }
+    formData.append("agent", effectiveAgent)
     if (selectedFile) {
       formData.append("file", selectedFile)
     }
@@ -201,11 +212,12 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
             }}
             value={value}
             rows={1}
-            className={`w-full bg-transparent outline-none resize-none text-[15px] caret-purple-400 leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-[180px] pt-1 ${
-              theme === 'dark' ? 'placeholder:text-white' : 'placeholder:text-black'
+            className={`w-full bg-transparent outline-none resize-none text-[15px] leading-relaxed [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-h-[180px] pt-1 ${
+              theme === 'dark' ? 'placeholder:text-white caret-white' : 'placeholder:text-black caret-black'
             }`}
             style={{
-              color: theme === 'dark' ? '#c084fc' : '#7e22ce'
+              color: theme === 'dark' ? '#FFFFFF' : '#000000',
+              caretColor: theme === 'dark' ? '#FFFFFF' : '#000000'
             }}
           />
 

@@ -1,16 +1,54 @@
-import { ChevronDown, Moon, PanelLeft, Plus, Sparkles, Sun } from 'lucide-react'
-import React from 'react'
+import { Brain, Check, ChevronDown, Code2, Moon, PanelLeft, Plus, Sparkles, Sun } from 'lucide-react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { addConversation, setSelectedConversation } from '../redux/conversationSlice'
+import { addConversation, setSelectedConversation, setSelectedModel } from '../redux/conversationSlice'
 import { createConversation } from '../features/createConversation'
 import { setMessages } from '../redux/messageSlice'
 import { useTheme } from '../context/ThemeContext'
 
 function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
-  const { selectedConversation } = useSelector(state => state.conversation)
+  const { selectedConversation, selectedModel } = useSelector(state => state.conversation)
   const { userData } = useSelector(state => state.user)
   const dispatch = useDispatch()
   const { theme, toggleTheme } = useTheme()
+  const [modelDropdownOpen, setModelDropdownOpen] = useState(false)
+  const dropdownRef = useRef(null)
+
+  const models = [
+    {
+      id: "4o",
+      name: "Indus GPT 4o",
+      tag: "4o",
+      desc: "Fast & smart for everyday simple tasks",
+      icon: Sparkles
+    },
+    {
+      id: "coding",
+      name: "Indus Coder",
+      tag: "Coder",
+      desc: "Specialized for coding, debugging & scripts",
+      icon: Code2
+    },
+    {
+      id: "reasoning",
+      name: "Indus Reason",
+      tag: "Reason",
+      desc: "Deep thinking for complex logic & math",
+      icon: Brain
+    }
+  ]
+
+  const activeModel = models.find(m => m.id === selectedModel) || models[0]
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setModelDropdownOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
 
   const handleNewChat = async () => {
     dispatch(setMessages([]))
@@ -48,36 +86,122 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
           <Plus size={18} color="#FFFFFF" />
         </button>
 
-        <div
-          className='icon-pop flex items-center gap-2.5 px-3 py-1.5 rounded-2xl border cursor-pointer group'
-          style={{
-            backgroundColor: theme === 'light' ? 'rgba(0,0,0,0.04)' : 'rgba(168,85,247,0.05)',
-            borderColor: theme === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(168,85,247,0.2)'
-          }}
-        >
-          <img src="/logo.png" alt="Indus GPT" className='w-10 h-10 object-contain shrink-0 bg-transparent' style={{ background: 'transparent' }} />
-          <span className='text-[16px] font-bold tracking-tight' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>Indus GPT</span>
-          <span
-            className='text-[11px] px-1.5 py-0.2 rounded-md ml-0.5'
+        <div className='relative' ref={dropdownRef}>
+          <div
+            onClick={() => setModelDropdownOpen(prev => !prev)}
+            className='icon-pop flex items-center gap-2.5 px-3 py-1.5 rounded-2xl border cursor-pointer group'
             style={{
-              color: theme === 'light' ? '#000000' : '#d8b4fe',
-              backgroundColor: theme === 'light' ? 'rgba(168,85,247,0.2)' : 'rgba(168,85,247,0.2)',
-              borderColor: theme === 'light' ? 'rgba(168,85,247,0.4)' : 'rgba(192,132,252,0.3)',
-              borderWidth: '1px',
-              fontWeight: theme === 'light' ? '700' : '500',
-              boxShadow: '0 0 10px rgba(168,85,247,0.3)'
+              backgroundColor: theme === 'light' ? 'rgba(0,0,0,0.04)' : 'rgba(168,85,247,0.05)',
+              borderColor: theme === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(168,85,247,0.2)'
             }}
           >
-            4o
-          </span>
-          <ChevronDown size={14} color={theme === 'light' ? '#000000' : '#c084fc'} className='ml-0.5 transition-transform group-hover:translate-y-0.5' />
+            <img src="/logo.png" alt="Indus GPT" className='w-10 h-10 object-contain shrink-0 bg-transparent' style={{ background: 'transparent' }} />
+            <span className='text-[16px] font-bold tracking-tight' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>Indus GPT</span>
+            <span
+              className='text-[11px] px-1.5 py-0.2 rounded-md ml-0.5'
+              style={{
+                color: theme === 'light' ? '#000000' : '#d8b4fe',
+                backgroundColor: theme === 'light' ? 'rgba(168,85,247,0.2)' : 'rgba(168,85,247,0.2)',
+                borderColor: theme === 'light' ? 'rgba(168,85,247,0.4)' : 'rgba(192,132,252,0.3)',
+                borderWidth: '1px',
+                fontWeight: theme === 'light' ? '700' : '500',
+                boxShadow: '0 0 10px rgba(168,85,247,0.3)'
+              }}
+            >
+              {activeModel.tag}
+            </span>
+            <ChevronDown size={14} color={theme === 'light' ? '#000000' : '#c084fc'} className={`ml-0.5 transition-transform ${modelDropdownOpen ? 'rotate-180' : 'group-hover:translate-y-0.5'}`} />
+          </div>
+
+          {modelDropdownOpen && (
+            <div
+              className='absolute top-full left-0 mt-2 w-72 rounded-2xl border shadow-2xl p-2 z-50'
+              style={{
+                backgroundColor: theme === 'light' ? '#ffffff' : '#171717',
+                borderColor: theme === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)',
+                boxShadow: theme === 'light' ? '0 12px 30px rgba(0,0,0,0.12)' : '0 12px 30px rgba(0,0,0,0.6)'
+              }}
+            >
+              <div className='px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-purple-400'>
+                Model Mode
+              </div>
+              <div className='space-y-1'>
+                {models.map((m) => {
+                  const isSelected = m.id === activeModel.id
+                  const Icon = m.icon
+                  return (
+                    <button
+                      key={m.id}
+                      onClick={() => {
+                        dispatch(setSelectedModel(m.id))
+                        setModelDropdownOpen(false)
+                      }}
+                      className='w-full flex items-center justify-between p-2.5 rounded-xl text-left cursor-pointer transition border'
+                      style={{
+                        backgroundColor: isSelected
+                          ? (theme === 'light' ? 'rgba(168,85,247,0.12)' : 'rgba(168,85,247,0.2)')
+                          : 'transparent',
+                        borderColor: isSelected
+                          ? (theme === 'light' ? 'rgba(168,85,247,0.3)' : 'rgba(168,85,247,0.4)')
+                          : 'transparent'
+                      }}
+                      onMouseEnter={e => {
+                        if (!isSelected) {
+                          e.currentTarget.style.backgroundColor = theme === 'light' ? '#f3f4f6' : 'rgba(255,255,255,0.06)'
+                        }
+                      }}
+                      onMouseLeave={e => {
+                        if (!isSelected) {
+                          e.currentTarget.style.backgroundColor = 'transparent'
+                        }
+                      }}
+                    >
+                      <div className='flex items-start gap-2.5'>
+                        <div
+                          className='w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5'
+                          style={{
+                            backgroundColor: isSelected ? 'rgba(168,85,247,0.25)' : (theme === 'light' ? '#f1f5f9' : 'rgba(255,255,255,0.08)'),
+                            color: theme === 'light' ? '#7e22ce' : '#c084fc'
+                          }}
+                        >
+                          <Icon size={15} />
+                        </div>
+                        <div>
+                          <div className='flex items-center gap-1.5'>
+                            <span className='text-[13.5px] font-semibold' style={{ color: theme === 'light' ? '#000000' : '#ffffff' }}>
+                              {m.name}
+                            </span>
+                            <span
+                              className='text-[10px] px-1.5 py-0.2 rounded font-medium'
+                              style={{
+                                color: theme === 'light' ? '#581c87' : '#d8b4fe',
+                                backgroundColor: 'rgba(168,85,247,0.15)'
+                              }}
+                            >
+                              {m.tag}
+                            </span>
+                          </div>
+                          <p className='text-[11.5px] leading-snug mt-0.5' style={{ color: theme === 'light' ? '#64748b' : '#94a3b8' }}>
+                            {m.desc}
+                          </p>
+                        </div>
+                      </div>
+                      {isSelected && (
+                        <Check size={16} className='text-purple-500 shrink-0 ml-2' />
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
         </div>
 
         {selectedConversation && selectedConversation.title !== "New Chat" && (
           <span
             className='hidden md:inline-block text-[13px] max-w-[200px] truncate ml-2 pl-3 border-l'
             style={{
-              color: theme === 'light' ? '#000000' : 'rgba(216,180,254,0.8)',
+              color: theme === 'light' ? '#000000' : '#FFFFFF',
               borderColor: 'var(--border-subtle)'
             }}
           >
@@ -106,13 +230,13 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
               onClick={onOpenBilling}
               className='icon-pop hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border text-[12px] font-medium cursor-pointer shadow-[0_0_12px_rgba(168,85,247,0.2)]'
               style={{
-                color: theme === 'light' ? '#000000' : '#d8b4fe',
+                color: theme === 'light' ? '#000000' : '#FFFFFF',
                 backgroundColor: theme === 'light' ? 'rgba(168,85,247,0.15)' : 'rgba(168,85,247,0.1)',
                 borderColor: theme === 'light' ? 'rgba(168,85,247,0.35)' : 'rgba(168,85,247,0.3)'
               }}
             >
               <Sparkles size={13} color={theme === 'light' ? '#000000' : '#c084fc'} />
-              <span style={{ color: theme === 'light' ? '#000000' : '#d8b4fe', fontWeight: theme === 'light' ? '600' : '500' }}>
+              <span style={{ color: theme === 'light' ? '#000000' : '#FFFFFF', fontWeight: theme === 'light' ? '600' : '500' }}>
                 {userData.credits ?? 100} credits
               </span>
             </button>

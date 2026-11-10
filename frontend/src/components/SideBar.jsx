@@ -201,19 +201,19 @@ function SideBar({ onLoginClick, collapsed, setCollapsed }) {
                                 onClick={() => setShowBilling(true)}
                                 className='icon-pop w-full flex items-center justify-between px-3.5 py-2 rounded-xl bg-purple-500/15 border border-purple-500/30 hover:border-purple-400/60 text-xs font-semibold transition cursor-pointer shadow-[0_0_14px_rgba(168,85,247,0.2)]'
                                 style={{
-                                    color: theme === 'light' ? '#000000' : '#d8b4fe'
+                                    color: theme === 'light' ? '#000000' : '#FFFFFF'
                                 }}
                             >
                                 <div className='flex items-center gap-2'>
                                     <Sparkles size={14} color={theme === 'light' ? '#000000' : '#c084fc'} />
-                                    <span style={{ color: theme === 'light' ? '#000000' : '#d8b4fe', fontWeight: theme === 'light' ? '700' : '600' }}>
+                                    <span style={{ color: theme === 'light' ? '#000000' : '#FFFFFF', fontWeight: theme === 'light' ? '700' : '600' }}>
                                         Upgrade Plan
                                     </span>
                                 </div>
                                 <span
                                     className='text-[11px] bg-purple-500/30 border border-purple-400/30 px-2 py-0.5 rounded-full'
                                     style={{
-                                        color: theme === 'light' ? '#000000' : '#d8b4fe',
+                                        color: theme === 'light' ? '#000000' : '#FFFFFF',
                                         fontWeight: theme === 'light' ? '700' : '500'
                                     }}
                                 >
