@@ -17,22 +17,19 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
   const models = [
     {
       id: "4o",
-      name: "Indus GPT 4o",
-      tag: "4o",
-      desc: "Fast & smart for everyday simple tasks",
+      name: "4o",
+      desc: "",
       icon: Sparkles
     },
     {
       id: "coding",
-      name: "Indus Coder",
-      tag: "Coder",
-      desc: "Specialized for coding, debugging & scripts",
+      name: "Coder",
+      desc: "Coding, complex problems & deep thinking",
       icon: Code2
     },
     {
       id: "reasoning",
-      name: "Indus Reason",
-      tag: "Reason",
+      name: "Reason",
       desc: "Deep thinking for complex logic & math",
       icon: Brain
     }
@@ -89,26 +86,15 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
         <div className='relative' ref={dropdownRef}>
           <div
             onClick={() => setModelDropdownOpen(prev => !prev)}
-            className='icon-pop flex items-center gap-2.5 px-3 py-1.5 rounded-2xl border cursor-pointer group'
+            className='icon-pop flex items-center gap-2 px-3 py-1.5 rounded-2xl border cursor-pointer group'
             style={{
-              backgroundColor: theme === 'light' ? 'rgba(0,0,0,0.04)' : 'rgba(168,85,247,0.05)',
-              borderColor: theme === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(168,85,247,0.2)'
+              backgroundColor: theme === 'light' ? 'rgba(168,85,247,0.06)' : 'rgba(168,85,247,0.08)',
+              borderColor: theme === 'light' ? 'rgba(168,85,247,0.35)' : 'rgba(168,85,247,0.3)',
+              boxShadow: '0 0 10px rgba(168,85,247,0.15)'
             }}
           >
-            <img src="/logo.png" alt="Indus GPT" className='w-10 h-10 object-contain shrink-0 bg-transparent' style={{ background: 'transparent' }} />
-            <span className='text-[16px] font-bold tracking-tight' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>Indus GPT</span>
-            <span
-              className='text-[11px] px-1.5 py-0.2 rounded-md ml-0.5'
-              style={{
-                color: theme === 'light' ? '#000000' : '#d8b4fe',
-                backgroundColor: theme === 'light' ? 'rgba(168,85,247,0.2)' : 'rgba(168,85,247,0.2)',
-                borderColor: theme === 'light' ? 'rgba(168,85,247,0.4)' : 'rgba(192,132,252,0.3)',
-                borderWidth: '1px',
-                fontWeight: theme === 'light' ? '700' : '500',
-                boxShadow: '0 0 10px rgba(168,85,247,0.3)'
-              }}
-            >
-              {activeModel.tag}
+            <span className='text-[15px] font-bold tracking-tight' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>
+              {activeModel.name}
             </span>
             <ChevronDown size={14} color={theme === 'light' ? '#000000' : '#c084fc'} className={`ml-0.5 transition-transform ${modelDropdownOpen ? 'rotate-180' : 'group-hover:translate-y-0.5'}`} />
           </div>
@@ -122,8 +108,11 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
                 boxShadow: theme === 'light' ? '0 12px 30px rgba(0,0,0,0.12)' : '0 12px 30px rgba(0,0,0,0.6)'
               }}
             >
-              <div className='px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-purple-400'>
-                Model Mode
+              <div
+                className='px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider'
+                style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}
+              >
+                MODEL MODE
               </div>
               <div className='space-y-1'>
                 {models.map((m) => {
@@ -161,33 +150,36 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
                           className='w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5'
                           style={{
                             backgroundColor: isSelected ? 'rgba(168,85,247,0.25)' : (theme === 'light' ? '#f1f5f9' : 'rgba(255,255,255,0.08)'),
-                            color: theme === 'light' ? '#7e22ce' : '#c084fc'
+                            color: '#c084fc'
                           }}
                         >
-                          <Icon size={15} />
+                          <Icon size={15} color="#c084fc" />
                         </div>
                         <div>
                           <div className='flex items-center gap-1.5'>
-                            <span className='text-[13.5px] font-semibold' style={{ color: theme === 'light' ? '#000000' : '#ffffff' }}>
+                            <span className='text-[13.5px] font-semibold' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>
                               {m.name}
                             </span>
                             <span
-                              className='text-[10px] px-1.5 py-0.2 rounded font-medium'
+                              className='text-[10px] px-1.5 py-0.2 rounded font-medium border'
                               style={{
                                 color: theme === 'light' ? '#581c87' : '#d8b4fe',
-                                backgroundColor: 'rgba(168,85,247,0.15)'
+                                backgroundColor: 'rgba(168,85,247,0.15)',
+                                borderColor: 'rgba(168,85,247,0.35)'
                               }}
                             >
-                              {m.tag}
+                              {m.name}
                             </span>
                           </div>
-                          <p className='text-[11.5px] leading-snug mt-0.5' style={{ color: theme === 'light' ? '#64748b' : '#94a3b8' }}>
-                            {m.desc}
-                          </p>
+                          {m.desc ? (
+                            <p className='text-[11.5px] leading-snug mt-0.5' style={{ color: theme === 'light' ? '#64748b' : '#94a3b8' }}>
+                              {m.desc}
+                            </p>
+                          ) : null}
                         </div>
                       </div>
                       {isSelected && (
-                        <Check size={16} className='text-purple-500 shrink-0 ml-2' />
+                        <Check size={16} className='text-purple-400 shrink-0 ml-2' />
                       )}
                     </button>
                   )
