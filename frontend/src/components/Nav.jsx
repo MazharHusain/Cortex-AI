@@ -17,7 +17,7 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
   const models = [
     {
       id: "4o",
-      name: "Fast",
+      name: "4o",
       tag: "Fast",
       desc: "Fast & Efficient tasks",
       icon: Sparkles
@@ -165,7 +165,7 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
                             <span
                               className='text-[13.5px] font-semibold'
                               style={{
-                                color: isSelected ? '#FFFFFF' : (theme === 'light' ? '#000000' : '#FFFFFF')
+                                color: theme === 'light' ? '#000000' : '#FFFFFF'
                               }}
                             >
                               {m.name}

@@ -117,12 +117,9 @@ function SideBar({ onLoginClick, collapsed, setCollapsed }) {
         <>
             <aside className='hidden lg:flex flex-col w-[260px] h-screen border-r shrink-0 select-none z-20 transition-colors' style={{ backgroundColor: 'var(--bg-sidebar)', borderColor: 'var(--border-subtle)' }}>
                 <div className='h-14 flex items-center justify-between px-3.5 border-b' style={{ borderColor: 'var(--border-header)' }}>
-                    <div className='flex items-center gap-2.5'>
-                        <img src="/logo.png" alt="Indus GPT" className='w-9 h-9 object-contain bg-transparent shrink-0' style={{ background: 'transparent' }} />
-                        <div className='flex flex-col leading-none'>
-                            <span className='font-bold text-[16px] tracking-tight leading-tight' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>Indus GPT</span>
-                            <span className='text-[9.5px] font-medium tracking-tight leading-tight mt-0.5' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>© Developed by Indus Technologies</span>
-                        </div>
+                    <div className='flex items-center gap-3'>
+                        <img src="/logo.png" alt="Indus GPT" className='w-9 h-9 object-contain bg-transparent' style={{ background: 'transparent' }} />
+                        <span className='font-bold text-[17px] tracking-tight' style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}>Indus GPT</span>
                     </div>
                     <div className='flex items-center gap-1.5'>
                         <button
