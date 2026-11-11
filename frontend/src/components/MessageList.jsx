@@ -65,7 +65,7 @@ function MessageList({ onSelectPrompt }) {
   ]
 
   return (
-    <div ref={containerRef} className='flex-1 overflow-y-auto px-3 sm:px-4 md:px-6 py-2 sm:py-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors' style={{ backgroundColor: 'var(--bg-main)' }}>
+    <div ref={containerRef} className='flex-1 overflow-y-auto px-2 sm:px-4 md:px-6 py-2 sm:py-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors' style={{ backgroundColor: 'var(--bg-main)' }}>
       {messages.length === 0 ? (
         <div className="min-h-full flex flex-col items-center justify-start sm:justify-center max-w-2xl mx-auto px-3 sm:px-4 text-center pt-2 sm:pt-0 pb-4">
           <div className='relative mb-2 sm:mb-4 flex flex-col items-center'>

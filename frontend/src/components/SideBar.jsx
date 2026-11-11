@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { LogOut, MessageSquare, PanelLeft, Plus, Sparkles, SquarePen, User, X } from "lucide-react"
 import { getConversations } from '../features/getConversations'
+import getMessages from '../features/getMessages'
 import { useDispatch, useSelector } from 'react-redux'
 import { setConversations, setSelectedConversation } from '../redux/conversationSlice'
 import { setMessages, setArtifacts } from '../redux/messageSlice'
@@ -56,11 +57,20 @@ function SideBar({ onLoginClick, collapsed, setCollapsed, mobileOpen, setMobileO
         dispatch(setArtifacts([]))
     }
 
-    const handleSelectConv = (conv) => {
-        // Close mobile sidebar
+    const handleSelectConv = async (conv) => {
         closeMobile()
-        // Load this conversation
+        if (!conv?._id) return
         dispatch(setSelectedConversation(conv))
+        try {
+            const data = await getMessages(conv._id)
+            if (Array.isArray(data)) {
+                dispatch(setMessages(data))
+                const latestArtifact = [...data].reverse().find(m => m.artifacts && m.artifacts.length > 0)
+                dispatch(setArtifacts(latestArtifact?.artifacts || []))
+            }
+        } catch (err) {
+            console.error("fetch messages error:", err)
+        }
     }
 
     const sidebarContent = (showCloseBtn = false) => (

@@ -26,8 +26,6 @@ function ChatArea({ onLoginClick, onToggleSidebar }) {
       }
       if (activeConvIdRef.current === selectedConversation._id) return
       activeConvIdRef.current = selectedConversation._id
-      dispatch(setMessages([]))
-      dispatch(setArtifacts([]))
       try {
         const data = await getMessages(selectedConversation._id)
         if (Array.isArray(data) && data.length > 0) {

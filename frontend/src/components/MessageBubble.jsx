@@ -130,12 +130,12 @@ function MessageBubble({ role, content, images, sources }) {
   }
 
   return (
-    <div className='flex gap-3.5 w-full justify-start items-start group'>
-      <div className='w-11 h-11 flex items-center justify-center shrink-0 mt-0.5 bg-transparent border-none shadow-none' style={{ background: 'transparent' }}>
+    <div className='flex gap-1.5 sm:gap-3.5 w-full justify-start items-start group'>
+      <div className='w-7 h-7 sm:w-11 sm:h-11 flex items-center justify-center shrink-0 mt-0.5 bg-transparent border-none shadow-none' style={{ background: 'transparent' }}>
         <img src="/logo.png" alt="Indus GPT" className='w-full h-full object-contain' style={{ background: 'transparent' }} />
       </div>
 
-      <div className='flex-1 min-w-0 text-[15px] leading-relaxed break-words space-y-2' style={{ color: 'var(--text-main)' }}>
+      <div className='flex-1 min-w-0 text-[14.5px] sm:text-[15px] leading-relaxed break-words space-y-2 pr-0 sm:pr-1' style={{ color: 'var(--text-main)' }}>
         {images && images.length > 0 && (
           <div className='grid grid-cols-2 sm:grid-cols-3 gap-2.5 my-3 max-w-[480px]'>
             {images.map((img, i) => (
@@ -176,10 +176,10 @@ function MessageBubble({ role, content, images, sources }) {
               <p className='mb-3 whitespace-pre-wrap break-words leading-7'>{children}</p>
             ),
             ul: ({ children }) => (
-              <ul className='list-disc pl-5 space-y-1 my-2'>{children}</ul>
+              <ul className='list-disc pl-4 sm:pl-5 space-y-1 my-2'>{children}</ul>
             ),
             ol: ({ children }) => (
-              <ol className='list-decimal pl-5 space-y-1 my-2'>{children}</ol>
+              <ol className='list-decimal pl-4 sm:pl-5 space-y-1 my-2'>{children}</ol>
             ),
             table: ({ children }) => (
               <div className='overflow-x-auto my-4 rounded-xl border' style={{ borderColor: 'var(--border-subtle)' }}>
