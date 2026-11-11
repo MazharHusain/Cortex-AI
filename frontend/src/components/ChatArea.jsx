@@ -15,32 +15,31 @@ function ChatArea({ onLoginClick, onToggleSidebar }) {
   const activeConvIdRef = React.useRef(null)
 
   useEffect(() => {
-    const getMesg = async () => {
+    const load = async () => {
       if (!selectedConversation?._id) {
-        activeConvIdRef.current = null
+        if (activeConvIdRef.current !== null) {
+          activeConvIdRef.current = null
+          dispatch(setMessages([]))
+          dispatch(setArtifacts([]))
+        }
         return
       }
-
-      // If user is continuing to chat in the same active conversation, don't re-fetch and wipe ongoing messages
-      if (activeConvIdRef.current === selectedConversation._id) {
-        return
-      }
+      if (activeConvIdRef.current === selectedConversation._id) return
       activeConvIdRef.current = selectedConversation._id
-
-      if (selectedConversation.title === "New Chat") return
-
+      dispatch(setMessages([]))
+      dispatch(setArtifacts([]))
       try {
         const data = await getMessages(selectedConversation._id)
         if (Array.isArray(data) && data.length > 0) {
           dispatch(setMessages(data))
-          const latestArtifactMessage = [...data].reverse().find(msg => msg.artifacts && msg.artifacts.length > 0)
-          dispatch(setArtifacts(latestArtifactMessage?.artifacts || []))
+          const latestArtifact = [...data].reverse().find(m => m.artifacts && m.artifacts.length > 0)
+          dispatch(setArtifacts(latestArtifact?.artifacts || []))
         }
       } catch (err) {
         console.error("fetch messages error:", err)
       }
     }
-    getMesg()
+    load()
   }, [selectedConversation?._id])
 
   return (
@@ -50,21 +49,13 @@ function ChatArea({ onLoginClick, onToggleSidebar }) {
         onLoginClick={onLoginClick}
         onOpenBilling={() => setShowBilling(true)}
       />
-      
-      <MessageList
-        onSelectPrompt={(text) => setInitialPrompt(text)}
-      />
-
+      <MessageList onSelectPrompt={(text) => setInitialPrompt(text)} />
       <ChatInput
         onLoginClick={onLoginClick}
         initialPrompt={initialPrompt}
         onClearInitialPrompt={() => setInitialPrompt("")}
       />
-
-      <BillingDrawer
-        open={showBilling}
-        onClose={() => setShowBilling(false)}
-      />
+      <BillingDrawer open={showBilling} onClose={() => setShowBilling(false)} />
     </div>
   )
 }

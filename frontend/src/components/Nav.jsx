@@ -1,9 +1,8 @@
 import { Brain, Check, ChevronDown, Code2, Moon, PanelLeft, Sparkles, Sun } from 'lucide-react'
 import React, { useState, useRef, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { addConversation, setSelectedConversation, setSelectedModel } from '../redux/conversationSlice'
-import { createConversation } from '../features/createConversation'
-import { setMessages } from '../redux/messageSlice'
+import { setSelectedConversation, setSelectedModel } from '../redux/conversationSlice'
+import { setMessages, setArtifacts } from '../redux/messageSlice'
 import { useTheme } from '../context/ThemeContext'
 
 function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
@@ -57,14 +56,9 @@ function Nav({ onToggleSidebar, onLoginClick, onOpenBilling }) {
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
-  const handleNewChat = async () => {
-    // If current chat is already empty/new, keep the same window like Gemini
-    if (!selectedConversation || messages?.length === 0 || selectedConversation.title === "New Chat") {
-      dispatch(setMessages([]))
-      dispatch(setSelectedConversation(null))
-      return
-    }
+  const handleNewChat = () => {
     dispatch(setMessages([]))
+    dispatch(setArtifacts([]))
     dispatch(setSelectedConversation(null))
   }
 

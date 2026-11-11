@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { LogOut, MessageSquare, PanelLeft, Plus, Sparkles, SquarePen, User, X } from "lucide-react"
 import { getConversations } from '../features/getConversations'
 import { useDispatch, useSelector } from 'react-redux'
-import { addConversation, setConversations, setSelectedConversation } from '../redux/conversationSlice'
-import { setMessages } from '../redux/messageSlice'
-import { createConversation } from '../features/createConversation'
+import { setConversations, setSelectedConversation } from '../redux/conversationSlice'
+import { setMessages, setArtifacts } from '../redux/messageSlice'
 import logOut from '../features/logOut'
 import { setUserdata } from '../redux/userSlice'
 import BillingDrawer from './BillingDrawer'
@@ -15,42 +14,50 @@ function SideBar({ onLoginClick, collapsed, setCollapsed, mobileOpen, setMobileO
     const [imageError, setImageError] = useState(false)
     const { conversations, selectedConversation } = useSelector(state => state.conversation)
     const { userData } = useSelector(state => state.user)
-    const [showBilling, setShowBilling] = useState(false)
     const { messages } = useSelector(state => state.message)
+    const [showBilling, setShowBilling] = useState(false)
     const { theme } = useTheme()
 
     useEffect(() => {
         setImageError(false)
     }, [userData?.avatar])
 
+    const loadConversations = async () => {
+        if (!userData?._id) return
+        const data = await getConversations()
+        const valid = (data || []).filter(c => c && c.title && c.title !== "New Chat")
+        dispatch(setConversations(valid))
+    }
+
     useEffect(() => {
-        const getConv = async () => {
-            const data = await getConversations()
-            // Gemini/ChatGPT style: don't show empty "New Chat" in recent list
-            const valid = (data || []).filter(c => c && c.title && c.title !== "New Chat")
-            dispatch(setConversations(valid))
-        }
-        if (userData?._id) {
-            getConv()
-        }
+        loadConversations()
     }, [userData?._id])
 
-    const handleCreateConversation = async () => {
-        // If current window is already a fresh new chat with no messages, don't create duplicate
-        if (!selectedConversation || messages.length === 0 || selectedConversation.title === "New Chat") {
-            dispatch(setMessages([]))
-            dispatch(setSelectedConversation(null))
-            if (setMobileOpen) setMobileOpen(false)
-            return
+    // Refresh conversations list when a new message is sent (messages count changes from 0 to 2)
+    useEffect(() => {
+        if (messages.length === 2 && selectedConversation?._id) {
+            loadConversations()
         }
-        dispatch(setMessages([]))
-        dispatch(setSelectedConversation(null))
+    }, [messages.length])
+
+    const closeMobile = () => {
         if (setMobileOpen) setMobileOpen(false)
     }
 
+    const handleNewChat = () => {
+        // Always close mobile sidebar
+        closeMobile()
+        // Clear conversation and messages (new fresh chat)
+        dispatch(setSelectedConversation(null))
+        dispatch(setMessages([]))
+        dispatch(setArtifacts([]))
+    }
+
     const handleSelectConv = (conv) => {
+        // Close mobile sidebar
+        closeMobile()
+        // Load this conversation
         dispatch(setSelectedConversation(conv))
-        if (setMobileOpen) setMobileOpen(false)
     }
 
     const sidebarContent = (showCloseBtn = false) => (
@@ -62,7 +69,7 @@ function SideBar({ onLoginClick, collapsed, setCollapsed, mobileOpen, setMobileO
                 </div>
                 <div className='flex items-center gap-1.5'>
                     <button
-                        onClick={handleCreateConversation}
+                        onClick={handleNewChat}
                         title="New chat"
                         className='icon-pop flex items-center justify-center w-8 h-8 rounded-lg border border-transparent hover:border-purple-400/40 cursor-pointer bg-transparent'
                         style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}
@@ -71,7 +78,7 @@ function SideBar({ onLoginClick, collapsed, setCollapsed, mobileOpen, setMobileO
                     </button>
                     {showCloseBtn ? (
                         <button
-                            onClick={() => setMobileOpen(false)}
+                            onClick={closeMobile}
                             title="Close menu"
                             className='icon-pop flex items-center justify-center w-8 h-8 rounded-lg border border-transparent hover:border-purple-400/40 cursor-pointer bg-transparent'
                             style={{ color: theme === 'light' ? '#000000' : '#FFFFFF' }}
@@ -93,7 +100,7 @@ function SideBar({ onLoginClick, collapsed, setCollapsed, mobileOpen, setMobileO
 
             <div className='px-3 pt-3 shrink-0'>
                 <button
-                    onClick={handleCreateConversation}
+                    onClick={handleNewChat}
                     className='icon-pop btn-fancy-purple w-full flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-2xl text-sm font-semibold cursor-pointer border-none shadow-[0_0_18px_rgba(168,85,247,0.35)]'
                 >
                     <Plus size={17} strokeWidth={2.4} color="#FFFFFF" />
@@ -133,12 +140,12 @@ function SideBar({ onLoginClick, collapsed, setCollapsed, mobileOpen, setMobileO
                                     className='shrink-0'
                                     color={isActive ? (theme === 'light' ? '#000000' : '#d8b4fe') : (theme === 'light' ? '#000000' : '#c084fc')}
                                 />
-                                <span className='truncate flex-1'>{conv?.title || "New Chat"}</span>
+                                <span className='truncate flex-1'>{conv?.title || "Chat"}</span>
                             </div>
                         )
                     })
                 ) : (
-                    <p className='text-xs px-3 py-4 text-center' style={{ color: theme === 'light' ? '#000000' : 'var(--text-muted)' }}>
+                    <p className='text-xs px-3 py-4 text-center' style={{ color: theme === 'light' ? '#64748b' : 'var(--text-muted)' }}>
                         No chats yet. Start a new conversation!
                     </p>
                 )}
@@ -160,10 +167,7 @@ function SideBar({ onLoginClick, collapsed, setCollapsed, mobileOpen, setMobileO
                             </div>
                             <span
                                 className='text-[11px] bg-purple-500/30 border border-purple-400/30 px-2 py-0.5 rounded-full'
-                                style={{
-                                    color: theme === 'light' ? '#000000' : '#FFFFFF',
-                                    fontWeight: theme === 'light' ? '700' : '500'
-                                }}
+                                style={{ color: theme === 'light' ? '#000000' : '#FFFFFF', fontWeight: theme === 'light' ? '700' : '500' }}
                             >
                                 {userData.credits ?? 100} credits
                             </span>
@@ -231,7 +235,7 @@ function SideBar({ onLoginClick, collapsed, setCollapsed, mobileOpen, setMobileO
 
                     <button
                         className='icon-pop btn-fancy-purple flex items-center justify-center w-10 h-10 rounded-xl cursor-pointer border-none shadow-[0_0_15px_rgba(168,85,247,0.4)]'
-                        onClick={handleCreateConversation}
+                        onClick={handleNewChat}
                         title="New chat"
                     >
                         <SquarePen size={18} color="#FFFFFF" />
@@ -244,17 +248,13 @@ function SideBar({ onLoginClick, collapsed, setCollapsed, mobileOpen, setMobileO
                                 <button
                                     key={conv?._id}
                                     onClick={() => handleSelectConv(conv)}
-                                    title={conv?.title || "New Chat"}
+                                    title={conv?.title || "Chat"}
                                     className={`icon-pop w-full flex items-center justify-center h-10 rounded-xl border transition cursor-pointer ${
                                         isActive
                                             ? "bg-purple-600/25 border-purple-400/50 shadow-[0_0_12px_rgba(168,85,247,0.3)]"
                                             : "bg-transparent border-transparent hover:bg-purple-600/10 hover:border-purple-500/30"
                                     }`}
-                                    style={{
-                                        color: isActive
-                                            ? (theme === 'light' ? '#000000' : '#d8b4fe')
-                                            : (theme === 'light' ? '#000000' : '#c084fc')
-                                    }}
+                                    style={{ color: isActive ? (theme === 'light' ? '#000000' : '#d8b4fe') : (theme === 'light' ? '#000000' : '#c084fc') }}
                                 >
                                     <MessageSquare size={16} color={isActive ? (theme === 'light' ? '#000000' : '#d8b4fe') : (theme === 'light' ? '#000000' : '#c084fc')} />
                                 </button>
@@ -293,7 +293,7 @@ function SideBar({ onLoginClick, collapsed, setCollapsed, mobileOpen, setMobileO
                     <>
                         <div
                             className='fixed inset-0 bg-black/60 z-40 lg:hidden'
-                            onClick={() => setMobileOpen(false)}
+                            onClick={closeMobile}
                         />
                         <aside
                             className='fixed left-0 top-0 h-full w-[280px] z-50 flex flex-col lg:hidden select-none transition-colors'
@@ -317,7 +317,7 @@ function SideBar({ onLoginClick, collapsed, setCollapsed, mobileOpen, setMobileO
                 <>
                     <div
                         className='fixed inset-0 bg-black/60 z-40 lg:hidden'
-                        onClick={() => setMobileOpen(false)}
+                        onClick={closeMobile}
                     />
                     <aside
                         className='fixed left-0 top-0 h-full w-[280px] z-50 flex flex-col lg:hidden select-none transition-colors'

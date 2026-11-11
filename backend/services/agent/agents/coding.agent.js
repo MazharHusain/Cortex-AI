@@ -73,28 +73,43 @@ User Request:
 ${state.prompt}`
 
       const res = await llm.invoke(prompt)
-      const rawContent = (res.content || "")
-        .replace(/^```json\s*/i, '')
-        .replace(/^```\s*/i, '')
-        .replace(/```\s*$/i, '')
-        .trim()
-      const jsonStart = rawContent.indexOf('{')
-      const jsonEnd = rawContent.lastIndexOf('}')
-      const cleanJson = jsonStart !== -1 && jsonEnd !== -1 ? rawContent.slice(jsonStart, jsonEnd + 1) : rawContent
-      const data = JSON.parse(cleanJson)
+      let files = []
+      try {
+        const rawContent = (res.content || "")
+          .replace(/^```json\s*/i, '')
+          .replace(/^```\s*/i, '')
+          .replace(/```\s*$/i, '')
+          .trim()
+        const jsonStart = rawContent.indexOf('{')
+        const jsonEnd = rawContent.lastIndexOf('}')
+        const cleanJson = jsonStart !== -1 && jsonEnd !== -1 ? rawContent.slice(jsonStart, jsonEnd + 1) : rawContent
+        const data = JSON.parse(cleanJson)
+        files = data.files || []
+      } catch (parseErr) {
+        console.error("Coding agent JSON parse error:", parseErr.message)
+        const contentStr = String(res.content || "")
+        const htmlMatch = contentStr.match(/```html\s*([\s\S]*?)```/i) || contentStr.match(/<!DOCTYPE html[\s\S]*?<\/html>/i)
+        const cssMatch = contentStr.match(/```css\s*([\s\S]*?)```/i)
+        const jsMatch = contentStr.match(/```javascript\s*([\s\S]*?)```/i) || contentStr.match(/```js\s*([\s\S]*?)```/i)
+        if (htmlMatch) {
+          files.push({ name: "index.html", content: htmlMatch[1] || htmlMatch[0] })
+          if (cssMatch) files.push({ name: "style.css", content: cssMatch[1] || cssMatch[0] })
+          if (jsMatch) files.push({ name: "script.js", content: jsMatch[1] || jsMatch[0] })
+        }
+      }
       await deductCredits(state.userId, "coding")
 
       return {
         ...state,
-        aiResponse: "Code Generated Successfully.",
-        artifacts: [
+        aiResponse: files.length > 0 ? "Code Generated Successfully." : (res.content || "Code Generated Successfully."),
+        artifacts: files.length > 0 ? [
           {
             id: Date.now(),
             type: "Project",
-            files: data.files || [],
+            files: files,
             title: state.prompt
           }
-        ]
+        ] : []
       }
     }
 
@@ -131,7 +146,7 @@ User Request: ${state.prompt}`)
     console.log(error)
     return {
       ...state,
-      aiResponse: "Sorry, I could not generate the code. Please try again with a more specific request.",
+      aiResponse: error?.data?.message || error?.message || "Sorry, I could not generate the code. Please try again with a more specific request.",
       artifacts: []
     }
   }
