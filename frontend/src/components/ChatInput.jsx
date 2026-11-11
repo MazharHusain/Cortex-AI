@@ -119,20 +119,17 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
       let conversation = selectedConversation
       if (!conversation) {
         try {
-          const conv = await Promise.race([
-            createConversation(),
-            new Promise(res => setTimeout(() => res(null), 2500))
-          ])
+          const conv = await createConversation()
           if (conv && conv._id) {
             const titledConv = { ...conv, title: promptText.slice(0, 40) }
             dispatch(setSelectedConversation(titledConv))
             dispatch(addConversation(titledConv))
             conversation = titledConv
-            updateConversation({ id: conv._id, title: promptText }).catch(() => {})
+            await updateConversation({ id: conv._id, title: promptText.slice(0, 40) }).catch(() => {})
           }
         } catch (_) {}
       } else if (conversation?.title === "New Chat") {
-        updateConversation({ id: conversation?._id, title: promptText }).catch(() => {})
+        updateConversation({ id: conversation?._id, title: promptText.slice(0, 40) }).catch(() => {})
         dispatch(setConvTitle({ conversationId: conversation?._id, title: promptText.slice(0, 40) }))
       }
 

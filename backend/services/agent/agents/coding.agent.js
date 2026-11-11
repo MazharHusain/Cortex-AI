@@ -72,7 +72,14 @@ Output must start with { and end with }. No markdown, no explanation, no backtic
 User Request:
 ${state.prompt}`
 
-      const res = await llm.invoke(prompt)
+    let res
+    try {
+      res = await llm.invoke(prompt)
+    } catch (llmErr) {
+      console.warn("Primary coding LLM failed, using fallback LLM:", llmErr.message)
+      const fallbackLlm = await getModel("chat")
+      res = await fallbackLlm.invoke(prompt)
+    }
       let files = []
       try {
         const rawContent = (res.content || "")
@@ -113,7 +120,8 @@ ${state.prompt}`
       }
     }
 
-    const res = await llm.invoke(`You are Indus GPT, an advanced AI assistant.
+    let resGeneral
+    const generalPrompt = `You are Indus GPT, an advanced AI assistant.
 
 CRITICAL LANGUAGE RULE:
 You MUST reply in the EXACT SAME language that the user used.
@@ -128,9 +136,17 @@ CRITICAL CONTENT RULE:
 - Do NOT output any boilerplate templates, empty code blocks, or N/A disclaimers.
 
 User Intent: ${intent}
-User Request: ${state.prompt}`)
+User Request: ${state.prompt}`
 
-    const cleanData = (res.content || "")
+    try {
+      resGeneral = await llm.invoke(generalPrompt)
+    } catch (llmErr) {
+      console.warn("Primary general LLM failed, using fallback LLM:", llmErr.message)
+      const fallbackLlm = await getModel("chat")
+      resGeneral = await fallbackLlm.invoke(generalPrompt)
+    }
+
+    const cleanData = (resGeneral.content || "")
       .replace(/(?:#{1,6}\s*)?\**Optimized Code(?:\s*\(if needed\))?\**[:\s]*[\s\S]*?(?=(?:#{1,6}\s|\n\n[A-Z]|$))/gi, "")
       .replace(/Optimized Code[\s\S]*$/gi, "")
       .trim()
