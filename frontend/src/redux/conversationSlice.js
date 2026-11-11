@@ -9,10 +9,13 @@ const conversationSlice = createSlice({
   },
   reducers: {
     setConversations: (state, action) => {
-      state.conversations = action.payload
+      state.conversations = (action.payload || []).filter(c => c && c.title && c.title !== "New Chat")
     },
     addConversation: (state, action) => {
-      state.conversations.unshift(action.payload)
+      const conv = action.payload
+      if (!conv || !conv.title || conv.title === "New Chat") return
+      if (state.conversations.some(c => c._id === conv._id)) return
+      state.conversations.unshift(conv)
     },
     setSelectedConversation: (state, action) => {
       state.selectedConversation = action.payload

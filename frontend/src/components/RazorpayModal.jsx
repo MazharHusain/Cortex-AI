@@ -355,8 +355,13 @@ function RazorpayModal({ open, onClose, orderData, userData, onSuccess, onError 
                           setCardNumber(formatCardNumber(e.target.value))
                           if (errors.cardNumber) setErrors(prev => ({ ...prev, cardNumber: "" }))
                         }}
-                        placeholder="4111 1111 1111 1111"
+                        placeholder="•••• •••• •••• ••••"
                         maxLength={19}
+                        autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="off"
+                        spellCheck={false}
+                        data-lpignore="true"
                         className={`w-full h-11 px-3.5 rounded-xl border text-sm font-mono text-slate-800 outline-none transition ${
                           errors.cardNumber ? "border-red-500 bg-red-50/20 focus:ring-2 focus:ring-red-100" : "border-slate-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
                         }`}

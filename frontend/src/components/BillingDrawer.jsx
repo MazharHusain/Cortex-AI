@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from "motion/react"
 import { Crown, X } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -30,6 +30,13 @@ function BillingDrawer({ open, onClose }) {
     const [payMode, setPayMode] = useState("")
     const [testOrder, setTestOrder] = useState(null)
     const isLight = theme === "light"
+
+    useEffect(() => {
+        if (!open) {
+            setPayError("")
+            setPayState("")
+        }
+    }, [open])
     const panelBg = isLight ? "#ffffff" : "#0f1117"
     const cardBg = isLight ? "#f8fafc" : "rgba(255,255,255,0.04)"
     const border = isLight ? "rgba(0,0,0,0.08)" : "rgba(255,255,255,0.1)"

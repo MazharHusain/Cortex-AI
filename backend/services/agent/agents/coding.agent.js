@@ -21,7 +21,7 @@ DOCUMENTATION
 User Request:
 ${state.prompt}`)
 
-    const intent = intentRes.content.trim()
+    const intent = intentRes.content.trim().toUpperCase().replace(/[^A-Z_]/g, '')
 
     if (intent === "CODE_GENERATION") {
       const prompt = `You are Indus GPT Coding Agent.
@@ -73,7 +73,15 @@ User Request:
 ${state.prompt}`
 
       const res = await llm.invoke(prompt)
-      const data = JSON.parse(res.content)
+      const rawContent = (res.content || "")
+        .replace(/^```json\s*/i, '')
+        .replace(/^```\s*/i, '')
+        .replace(/```\s*$/i, '')
+        .trim()
+      const jsonStart = rawContent.indexOf('{')
+      const jsonEnd = rawContent.lastIndexOf('}')
+      const cleanJson = jsonStart !== -1 && jsonEnd !== -1 ? rawContent.slice(jsonStart, jsonEnd + 1) : rawContent
+      const data = JSON.parse(cleanJson)
       await deductCredits(state.userId, "coding")
 
       return {
@@ -123,7 +131,7 @@ User Request: ${state.prompt}`)
     console.log(error)
     return {
       ...state,
-      aiResponse: error?.data?.message || "failed to generate code",
+      aiResponse: "Sorry, I could not generate the code. Please try again with a more specific request.",
       artifacts: []
     }
   }
