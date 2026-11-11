@@ -117,7 +117,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
 
     try {
       let conversation = selectedConversation
-      if (userData && !conversation) {
+      if (!conversation) {
         try {
           const conv = await Promise.race([
             createConversation(),
@@ -131,7 +131,7 @@ function ChatInput({ onLoginClick, initialPrompt, onClearInitialPrompt }) {
             updateConversation({ id: conv._id, title: promptText }).catch(() => {})
           }
         } catch (_) {}
-      } else if (userData && conversation?.title === "New Chat") {
+      } else if (conversation?.title === "New Chat") {
         updateConversation({ id: conversation?._id, title: promptText }).catch(() => {})
         dispatch(setConvTitle({ conversationId: conversation?._id, title: promptText.slice(0, 40) }))
       }

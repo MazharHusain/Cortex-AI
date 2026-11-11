@@ -18,7 +18,7 @@ const artifactSchema = new mongoose.Schema({
 
 const messageSchema = new mongoose.Schema({
     conversationId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.Mixed,
         ref: "Conversation"
     },
     role: {

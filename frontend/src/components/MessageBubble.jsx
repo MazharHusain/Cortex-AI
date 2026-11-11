@@ -137,12 +137,12 @@ function MessageBubble({ role, content, images, sources }) {
 
       <div className='flex-1 min-w-0 text-[15px] leading-relaxed break-words space-y-2' style={{ color: 'var(--text-main)' }}>
         {images && images.length > 0 && (
-          <div className='grid grid-cols-2 sm:grid-cols-3 gap-2 my-3' style={{maxWidth:'480px'}}>
+          <div className='grid grid-cols-2 sm:grid-cols-3 gap-2.5 my-3 max-w-[480px]'>
             {images.map((img, i) => (
               <div
                 key={i}
-                className="relative overflow-hidden rounded-xl border border-purple-400/25 shadow-sm bg-transparent cursor-zoom-in hover:opacity-95 hover:border-purple-400/50 transition"
-                style={{aspectRatio:'1/1'}}
+                className="relative overflow-hidden rounded-xl border border-purple-400/25 shadow-sm bg-black/5 dark:bg-white/5 cursor-zoom-in hover:opacity-95 hover:border-purple-400/50 transition flex items-center justify-center"
+                style={{ height: '140px' }}
                 onClick={() => setLightBox(img)}
               >
                 <img
@@ -154,7 +154,7 @@ function MessageBubble({ role, content, images, sources }) {
                       e.currentTarget.parentElement.style.display = 'none'
                     }
                   }}
-                  className="w-full h-full object-cover rounded-xl block"
+                  className="w-full h-full object-contain rounded-xl block p-1"
                 />
               </div>
             ))}

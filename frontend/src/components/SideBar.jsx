@@ -23,22 +23,25 @@ function SideBar({ onLoginClick, collapsed, setCollapsed, mobileOpen, setMobileO
     }, [userData?.avatar])
 
     const loadConversations = async () => {
-        if (!userData?._id) return
-        const data = await getConversations()
-        const valid = (data || []).filter(c => c && c.title && c.title !== "New Chat")
-        dispatch(setConversations(valid))
+        try {
+            const data = await getConversations()
+            const valid = (data || []).filter(c => c && c.title && c.title !== "New Chat")
+            dispatch(setConversations(valid))
+        } catch (err) {
+            console.warn("loadConversations error:", err)
+        }
     }
 
     useEffect(() => {
         loadConversations()
     }, [userData?._id])
 
-    // Refresh conversations list when a new message is sent (messages count changes from 0 to 2)
+    // Refresh conversations list when a new message is sent or conversation changes
     useEffect(() => {
-        if (messages.length === 2 && selectedConversation?._id) {
+        if (messages.length >= 2 && selectedConversation?._id) {
             loadConversations()
         }
-    }, [messages.length])
+    }, [messages.length, selectedConversation?._id])
 
     const closeMobile = () => {
         if (setMobileOpen) setMobileOpen(false)
